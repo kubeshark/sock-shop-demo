@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-kafka-go
+  labels:
+    name: mizutest-kafka-go
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-kafka-go
+  template:
+    metadata:
+      labels:
+        name: mizutest-kafka-go
+    spec:
+      containers:
+      - name: mizutest-kafka-go
+        image: mertyildiran/mizutest-kafka-go:latest
+        imagePullPolicy: Always
+        command: ["./run.sh"]
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 9092
+        # securityContext:
+        #   runAsNonRoot: true
+        #   runAsUser: 10001
+        #   capabilities:
+        #     drop:
+        #       - all
+        #     add:
+        #       - NET_BIND_SERVICE
+        #   readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux

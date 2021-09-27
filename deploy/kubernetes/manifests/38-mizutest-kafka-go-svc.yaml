@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-kafka-go
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-kafka-go
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 9092
+    targetPort: 9092
+  selector:
+    name: mizutest-kafka-go
