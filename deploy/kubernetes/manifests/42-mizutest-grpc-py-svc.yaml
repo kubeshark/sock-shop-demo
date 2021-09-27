@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-grpc-py
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-grpc-py
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 50051
+    targetPort: 50051
+  selector:
+    name: mizutest-grpc-py
