@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-grpc-py
+  name: mizutest-grpc-py-client
   labels:
-    name: mizutest-grpc-py
+    name: mizutest-grpc-py-client
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-grpc-py
+      name: mizutest-grpc-py-client
   template:
     metadata:
       labels:
-        name: mizutest-grpc-py
+        name: mizutest-grpc-py-client
     spec:
       containers:
-      - name: mizutest-grpc-py
-        image: mertyildiran/mizutest-grpc-py:latest
+      - name: mizutest-grpc-py-client
+        image: mertyildiran/mizutest-grpc-py-client:latest
         env:
         - name: PYTHONUNBUFFERED
           value: "1"
