@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/microservices-demo/microservices-demo.svg?branch=master)](https://travis-ci.org/microservices-demo/microservices-demo)
 
+> Note: The source code of the images related to the additions for gRPC, AMQP, Kafka and Redis protocols can be found in the `additions` folder.
+
 # Sock Shop : A Microservice Demo Application
 
 The application is the user-facing part of an online shop that sells socks. It is intended to aid the demonstration and testing of microservice and cloud native technologies.
