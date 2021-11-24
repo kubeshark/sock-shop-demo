@@ -23,11 +23,11 @@ spec:
         command: ["./run.sh"]
         resources:
           limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 100m
+            cpu: 75m
             memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 9092
         securityContext:
