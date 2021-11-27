@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: kafka
   serviceName: "kafka"
-  replicas: 3
+  replicas: 1
   podManagementPolicy: OrderedReady
   template:
     metadata:

@@ -2,39 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-amqp-py
+  name: mizutest-kafka-py
   labels:
-    name: mizutest-amqp-py
+    name: mizutest-kafka-py
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-amqp-py
+      name: mizutest-kafka-py
   template:
     metadata:
       labels:
-        name: mizutest-amqp-py
+        name: mizutest-kafka-py
     spec:
       containers:
-      - name: mizutest-amqp-py
-        image: mertyildiran/mizutest-amqp-py:latest
-        env:
-        - name: PYTHONUNBUFFERED
-          value: "1"
-        - name: PYTHONIOENCODING
-          value: "UTF-8"
+      - name: mizutest-kafka-py
+        image: mertyildiran/mizutest-kafka-py:latest
         imagePullPolicy: Always
-        command: ["python3", "example.py"]
+        command: ["./run.sh"]
         resources:
           limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 100m
+            cpu: 75m
             memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
         ports:
-        - containerPort: 5672
+        - containerPort: 9092
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001

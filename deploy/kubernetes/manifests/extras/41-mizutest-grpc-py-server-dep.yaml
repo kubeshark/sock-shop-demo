@@ -2,34 +2,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-kafka-py
+  name: mizutest-grpc-py-server
   labels:
-    name: mizutest-kafka-py
+    name: mizutest-grpc-py-server
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-kafka-py
+      name: mizutest-grpc-py-server
   template:
     metadata:
       labels:
-        name: mizutest-kafka-py
+        name: mizutest-grpc-py-server
     spec:
       containers:
-      - name: mizutest-kafka-py
-        image: mertyildiran/mizutest-kafka-py:latest
+      - name: mizutest-grpc-py-server
+        image: mertyildiran/mizutest-grpc-py-server:latest
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: PYTHONIOENCODING
+          value: "UTF-8"
         imagePullPolicy: Always
         command: ["./run.sh"]
         resources:
           limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 100m
+            cpu: 75m
             memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
         ports:
-        - containerPort: 9092
+        - containerPort: 50051
         securityContext:
           runAsNonRoot: true
           runAsUser: 10001
