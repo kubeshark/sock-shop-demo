@@ -12,18 +12,15 @@ RED='\033[0;31m'
 
 delete () {
     echo "Deleting sock-shop namespace resources"
-    kubectl delete deployments -n sock-shop --all
-    kubectl delete services -n sock-shop --all
-    kubectl delete pods -n sock-shop --all
-    kubectl delete daemonset -n sock-shop --all
-    kubectl delete namespace sock-shop
+    kubectl delete all --all -n sock-shop
+    kubectl delete namespace sock-shop || true
 
     echo "Deleting monitoring namespace resources"
-    kubectl delete deployments -n monitoring --all
-    kubectl delete services -n monitoring --all
-    kubectl delete pods -n monitoring --all
-    kubectl delete daemonset -n monitoring --all
-    kubectl delete namespace monitoring
+    kubectl delete all --all -n monitoring
+    kubectl delete namespace monitoring || true
+
+    echo "Deleting default namespace resources"
+    kubectl delete all --all
 }
 
 # Check kubectl and current cluster context
