@@ -27,4 +27,4 @@ spec:
         command: ["/bin/sh"]
         args: ["-c", "while true; do locust --host http://front-end.sock-shop.svc.cluster.local -f /config/locustfile.py --clients 5 --hatch-rate 5 --num-request 100 --no-web; done"]
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
