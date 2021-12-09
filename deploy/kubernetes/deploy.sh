@@ -38,6 +38,8 @@ deploy () {
     # TODO: Forward Grafana and Prometheus ports
     # Grafana: 3000:$NODE_IN_CLUSTER:31300
     # Prometheus: 9090:$NODE_IN_CLUSTER:31090
+
+    echo -e "sock-shop is running, you can access through front-end service: ${RED}\"$(kubectl get svc -l name=front-end -n sock-shop | awk ' { print $4 } ')\"${NC}"
 }
 
 # Check kubectl and current cluster context
