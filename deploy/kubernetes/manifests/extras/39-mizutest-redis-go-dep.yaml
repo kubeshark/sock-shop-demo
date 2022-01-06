@@ -20,7 +20,7 @@ spec:
       - name: mizutest-redis-go
         image: mertyildiran/mizutest-redis-go:latest
         imagePullPolicy: Always
-        command: ["./run.sh"]
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
         resources:
           limits:
             cpu: 75m

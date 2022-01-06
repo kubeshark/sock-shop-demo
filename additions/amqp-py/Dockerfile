@@ -6,3 +6,4 @@ RUN pip3 install -r requirements.txt
 RUN apt-get update
 RUN apt-get -y install curl procps
 COPY example.py .
+COPY run.sh .

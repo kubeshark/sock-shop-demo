@@ -25,7 +25,7 @@ spec:
         - name: PYTHONIOENCODING
           value: "UTF-8"
         imagePullPolicy: Always
-        command: ["python3", "example.py"]
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
         resources:
           limits:
             cpu: 50m

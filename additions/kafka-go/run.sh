@@ -2,8 +2,9 @@
 
 while true; do
     echo "-----" && \
-    go run produce.go && \
-    go run consume.go && \
-    go run create_topics.go && \
-    go run list_topics.go
+    ./produce && \
+    ./consume && \
+    ./create_topics && \
+    ./list_topics && \
+    sleep 3
 done
