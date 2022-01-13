@@ -3,10 +3,10 @@ MANIFESTS = $(or $(shell printenv MANIFESTS), manifests)
 
 .PHONY: gen-complete-demo
 gen-complete-demo:
-	awk '{print}' ${MANIFESTS}/* ${MANIFESTS}/extras/* > complete-demo.yaml
+	awk '{print}' $(shell find ${MANIFESTS} -type f) > complete-demo.yaml
 .PHONY: check-complete-demo
 check-complete-demo:
-	awk '{print}' ${MANIFESTS}/* ${MANIFESTS}/extras/* | diff complete-demo.yaml -
+	awk '{print}' $(shell find ${MANIFESTS} -type f) | diff complete-demo.yaml -
 .dockerimage: Dockerfile
 	docker build -t manifests-image .
 	touch .dockerimage
