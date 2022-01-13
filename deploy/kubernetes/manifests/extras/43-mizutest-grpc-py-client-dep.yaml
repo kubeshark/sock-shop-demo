@@ -25,7 +25,7 @@ spec:
         - name: PYTHONIOENCODING
           value: "UTF-8"
         imagePullPolicy: Always
-        command: ["./run.sh"]
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
         resources:
           limits:
             cpu: 75m
