@@ -32,8 +32,8 @@ spec:
             cpu: 300m
             memory: 500Mi
           requests:
-            cpu: 100m
-            memory: 200Mi
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -157,8 +157,8 @@ spec:
             cpu: 200m
             memory: 200Mi
           requests:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -310,7 +310,7 @@ metadata:
     name: front-end
   namespace: sock-shop
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 8079
@@ -346,8 +346,8 @@ spec:
             cpu: 500m
             memory: 500Mi
           requests:
-            cpu: 100m
-            memory: 300Mi
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -465,11 +465,11 @@ spec:
         image: weaveworksdemos/payment:0.4.3
         resources:
           limits:
-            cpu: 200m
+            cpu: 100m
             memory: 200Mi
           requests:
-            cpu: 99m
-            memory: 100Mi
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -538,11 +538,11 @@ spec:
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
         resources:
           limits:
-            cpu: 300m
+            cpu: 150m
             memory: 500Mi
           requests:
-            cpu: 100m
-            memory: 300Mi
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 80
       nodeSelector:
@@ -712,11 +712,11 @@ spec:
            value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
         resources:
           limits:
-            cpu: 300m
+            cpu: 200m
             memory: 500Mi
           requests:
-            cpu: 100m
-            memory: 300Mi
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 80
         securityContext:
@@ -778,11 +778,11 @@ spec:
         image: weaveworksdemos/user:0.4.7
         resources:
           limits:
-            cpu: 300m
+            cpu: 200m
             memory: 200Mi
           requests:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 10m
+            memory: 10Mi
         ports:
         - containerPort: 80
         env:
@@ -888,3 +888,822 @@ spec:
   selector:
     name: user-db
 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-amqp-py
+  labels:
+    name: mizutest-amqp-py
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-amqp-py
+  template:
+    metadata:
+      labels:
+        name: mizutest-amqp-py
+    spec:
+      containers:
+      - name: mizutest-amqp-py
+        image: mertyildiran/mizutest-amqp-py:latest
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: PYTHONIOENCODING
+          value: "UTF-8"
+        imagePullPolicy: Always
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 5672
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-amqp-py
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-amqp-py
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 5672
+    targetPort: 5672
+  selector:
+    name: mizutest-amqp-py
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: zookeeper
+  name: zookeeper
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+      - image: library/zookeeper:3.4.13
+        imagePullPolicy: IfNotPresent
+        name: zookeeper
+        ports:
+        - containerPort: 2181
+        env:
+        - name: ZOO_MY_ID
+          value: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zookeeper-service
+  name: zookeeper-service
+  namespace: sock-shop
+spec:
+  type: NodePort
+  ports:
+  - name: zookeeper-port
+    port: 2181
+    # nodePort: 30181
+    targetPort: 2181
+  selector:
+    app: zookeeper
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  namespace: sock-shop
+spec:
+  selector:
+    matchLabels:
+      app: kafka
+  serviceName: "kafka"
+  replicas: 1
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: kafka # has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: kafka
+        image: wurstmeister/kafka:2.11-2.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9092
+          name: plaintext
+        - containerPort: 9999
+          name: jmx
+        env:
+          - name: KAFKA_ADVERTISED_PORT
+            value: "9092"
+          - name: BROKER_ID_COMMAND
+            value: "hostname | cut -d'-' -f2"
+          - name: KAFKA_ZOOKEEPER_CONNECT
+            value: "zookeeper-service:2181"
+          - name: KAFKA_LISTENERS
+            value: "PLAINTEXT://:9092"
+          - name: KAFKA_JMX_OPTS
+            value: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.rmi.port=9999 -Djava.rmi.server.hostname=127.0.0.1"
+          - name: JMX_PORT
+            value: "9999"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: sock-shop
+  labels:
+    app: kafka
+spec:
+  ports:
+  - port: 9092
+    name: plaintext
+  - port: 9999
+    name: jmx
+  clusterIP: None
+  selector:
+    app: kafka
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-kafka-py
+  labels:
+    name: mizutest-kafka-py
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-kafka-py
+  template:
+    metadata:
+      labels:
+        name: mizutest-kafka-py
+    spec:
+      containers:
+      - name: mizutest-kafka-py
+        image: mertyildiran/mizutest-kafka-py:latest
+        imagePullPolicy: Always
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 9092
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-kafka-py
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-kafka-py
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 9092
+    targetPort: 9092
+  selector:
+    name: mizutest-kafka-py
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-kafka-go
+  labels:
+    name: mizutest-kafka-go
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-kafka-go
+  template:
+    metadata:
+      labels:
+        name: mizutest-kafka-go
+    spec:
+      containers:
+      - name: mizutest-kafka-go
+        image: mertyildiran/mizutest-kafka-go:latest
+        imagePullPolicy: Always
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 9092
+        # securityContext:
+        #   runAsNonRoot: true
+        #   runAsUser: 10001
+        #   capabilities:
+        #     drop:
+        #       - all
+        #     add:
+        #       - NET_BIND_SERVICE
+        #   readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-kafka-go
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-kafka-go
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 9092
+    targetPort: 9092
+  selector:
+    name: mizutest-kafka-go
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-redis-go
+  labels:
+    name: mizutest-redis-go
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-redis-go
+  template:
+    metadata:
+      labels:
+        name: mizutest-redis-go
+    spec:
+      containers:
+      - name: mizutest-redis-go
+        image: mertyildiran/mizutest-redis-go:latest
+        imagePullPolicy: Always
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 6379
+        # securityContext:
+        #   runAsNonRoot: true
+        #   runAsUser: 10001
+        #   capabilities:
+        #     drop:
+        #       - all
+        #     add:
+        #       - NET_BIND_SERVICE
+        #   readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-redis-go
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-redis-go
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 6379
+    targetPort: 6379
+  selector:
+    name: mizutest-redis-go
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-grpc-py-server
+  labels:
+    name: mizutest-grpc-py-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-grpc-py-server
+  template:
+    metadata:
+      labels:
+        name: mizutest-grpc-py-server
+    spec:
+      containers:
+      - name: mizutest-grpc-py-server
+        image: mertyildiran/mizutest-grpc-py-server:latest
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: PYTHONIOENCODING
+          value: "UTF-8"
+        imagePullPolicy: Always
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 50051
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-grpc-py-server
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-grpc-py-server
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 50051
+    targetPort: 50051
+  selector:
+    name: mizutest-grpc-py-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-grpc-py-client
+  labels:
+    name: mizutest-grpc-py-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-grpc-py-client
+  template:
+    metadata:
+      labels:
+        name: mizutest-grpc-py-client
+    spec:
+      containers:
+      - name: mizutest-grpc-py-client
+        image: mertyildiran/mizutest-grpc-py-client:latest
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: PYTHONIOENCODING
+          value: "UTF-8"
+        imagePullPolicy: Always
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 50051
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-grpc-py-client
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-grpc-py-client
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 50051
+    targetPort: 50051
+  selector:
+    name: mizutest-grpc-py-client
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizu-internet-access
+  namespace: sock-shop
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8899
+  selector:
+    app: mizu-api-server
+  type: LoadBalancer
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+  name: mizu-ingress
+  namespace: default
+spec:
+  defaultBackend:
+    service:
+      name: mizu-external
+      port:
+        number: 80
+---
+# Source: nginx-ingress/templates/controller-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.41.3
+    heritage: Helm
+    release: nginx-ingress
+  name: nginx-ingress
+---
+# Source: nginx-ingress/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.41.3
+    heritage: Helm
+    release: nginx-ingress
+  name: nginx-ingress
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - extensions
+      - "networking.k8s.io" # k8s 1.14+
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - extensions
+      - "networking.k8s.io" # k8s 1.14+
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+---
+# Source: nginx-ingress/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.41.3
+    heritage: Helm
+    release: nginx-ingress
+  name: nginx-ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nginx-ingress
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress
+    namespace: default
+---
+# Source: nginx-ingress/templates/controller-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.41.3
+    heritage: Helm
+    release: nginx-ingress
+  name: nginx-ingress
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - pods
+      - secrets
+      - endpoints
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - extensions
+      - "networking.k8s.io" # k8s 1.14+
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - "networking.k8s.io" # k8s 1.14+
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      - ingress-controller-leader-nginx
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - create
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+# Source: nginx-ingress/templates/controller-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.41.3
+    heritage: Helm
+    release: nginx-ingress
+  name: nginx-ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: nginx-ingress
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress
+    namespace: default
+---
+# Source: nginx-ingress/templates/controller-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.41.3
+    component: "controller"
+    heritage: Helm
+    release: nginx-ingress
+  name: nginx-ingress-controller
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: https
+  selector:
+    app: nginx-ingress
+    release: nginx-ingress
+    app.kubernetes.io/component: controller
+  type: "LoadBalancer"
+---
+# Source: nginx-ingress/templates/controller-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.41.3
+    heritage: Helm
+    release: nginx-ingress
+    app.kubernetes.io/component: controller
+  name: nginx-ingress-controller
+  annotations:
+    {}
+spec:
+  selector:
+    matchLabels:
+      app: nginx-ingress
+      release: nginx-ingress
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    {}
+  minReadySeconds: 0
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+        release: nginx-ingress
+        component: "controller"
+        app.kubernetes.io/component: controller
+    spec:
+      dnsPolicy: ClusterFirst
+      containers:
+        - name: nginx-ingress-controller
+          image: "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - /nginx-ingress-controller
+            - --default-backend-service=default/nginx-ingress-default-backend
+            - --election-id=ingress-controller-leader
+            - --ingress-class=nginx
+            - --configmap=default/nginx-ingress-controller
+          securityContext:
+            capabilities:
+                drop:
+                - ALL
+                add:
+                - NET_BIND_SERVICE
+            runAsUser: 101
+            allowPrivilegeEscalation: true
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            {}
+      hostNetwork: false
+      serviceAccountName: nginx-ingress
+      terminationGracePeriodSeconds: 60
