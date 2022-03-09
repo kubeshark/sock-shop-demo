@@ -6,7 +6,7 @@ ACCESS_TOKEN = '4c702fb4a535d46c25a4071ae95178bdd677db164ec73d90a5e4d4f17b02b0c2
 j = 0
 while True:
     j += 1
-    print("-----\n%d" % j)
+    # print("-----\n%d" % j)
 
     url = "https://gorest.co.in/public/v2/users"
 
@@ -19,7 +19,7 @@ while True:
 
     response = requests.request("POST", url, data=payload, headers=headers)
 
-    print(response.text)
+    # print(response.text)
 
     url = "https://gorest.co.in/public/v2/users"
 
@@ -29,7 +29,7 @@ while True:
 
     response = requests.request("GET", url, headers=headers)
 
-    print(response.text)
+    # print(response.text)
 
     url = "https://gorest.co.in/public/v2/posts"
 
@@ -39,6 +39,6 @@ while True:
 
     response = requests.request("GET", url, headers=headers)
 
-    print(response.text)
+    # print(response.text)
     
     time.sleep(3)
