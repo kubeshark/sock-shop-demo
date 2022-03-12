@@ -1,5 +1,7 @@
 import time
 import requests
+import traceback
+import logging
 
 ACCESS_TOKEN = '4c702fb4a535d46c25a4071ae95178bdd677db164ec73d90a5e4d4f17b02b0c2'
 
@@ -17,7 +19,10 @@ while True:
         'cache-control': "no-cache",
     }
 
-    response = requests.request("POST", url, data=payload, headers=headers)
+    try:
+        response = requests.request("POST", url, data=payload, headers=headers)
+    except Exception as e:
+        logging.error(traceback.format_exc())
 
     # print(response.text)
 
@@ -27,7 +32,10 @@ while True:
         'cache-control': "no-cache",
     }
 
-    response = requests.request("GET", url, headers=headers)
+    try:
+        response = requests.request("GET", url, headers=headers)
+    except Exception as e:
+        logging.error(traceback.format_exc())
 
     # print(response.text)
 
@@ -37,7 +45,10 @@ while True:
         'cache-control': "no-cache",
     }
 
-    response = requests.request("GET", url, headers=headers)
+    try:
+        response = requests.request("GET", url, headers=headers)
+    except Exception as e:
+        logging.error(traceback.format_exc())
 
     # print(response.text)
     
