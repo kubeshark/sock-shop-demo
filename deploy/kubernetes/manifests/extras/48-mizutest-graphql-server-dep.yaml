@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: mizutest-graphql-server
-        image: computecoholic/swapi-graphql:latest
+        image: mertyildiran/swapi-graphql:latest
         imagePullPolicy: Always
         resources:
           limits:

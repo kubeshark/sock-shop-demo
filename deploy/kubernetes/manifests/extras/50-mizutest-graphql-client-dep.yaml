@@ -38,6 +38,5 @@ spec:
               - all
             add:
               - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux

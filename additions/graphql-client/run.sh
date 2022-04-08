@@ -6,8 +6,6 @@ while true
 do
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
@@ -20,8 +18,6 @@ curl -X POST $GRAPHQL_SERVER \
 BODY
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
@@ -38,8 +34,6 @@ curl -X POST $GRAPHQL_SERVER \
 BODY
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
@@ -64,8 +58,6 @@ curl -X POST $GRAPHQL_SERVER \
 BODY
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
@@ -83,8 +75,6 @@ curl -X POST $GRAPHQL_SERVER \
 BODY
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
@@ -114,8 +104,6 @@ curl -X POST $GRAPHQL_SERVER \
 BODY
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
@@ -147,8 +135,6 @@ fragment pilotFragment on Person {
 BODY
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
@@ -177,8 +163,6 @@ fragment pilotFragment on Person {
 BODY
 
 curl -X POST $GRAPHQL_SERVER \
-    --silent \
-    --output /dev/null \
     -H "Content-Type: application/json" \
     -d @- <<BODY
 {"query": "
