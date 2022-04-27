@@ -40,3 +40,4 @@ spec:
         #   readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux
+      automountServiceAccountToken: false
