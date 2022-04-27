@@ -4,6 +4,10 @@ kind: Namespace
 metadata:
   name: loadtest
 ---
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: false
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,5 +30,30 @@ spec:
         image: weaveworksdemos/load-test:0.1.1
         command: ["/bin/sh"]
         args: ["-c", "while true; do locust --host http://front-end.sock-shop.svc.cluster.local -f /config/locustfile.py --clients 1 --hatch-rate 1 --num-request 10 --no-web; done"]
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-test
+  labels:
+    name: load-test
+  namespace: loadtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: load-test
+  template:
+    metadata:
+      labels:
+        name: load-test
+    spec:
+      containers:
+        - name: load-test
+          image: weaveworksdemos/load-test:0.1.1
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do locust --host http://front-end.sock-shop.svc.cluster.local -f /config/locustfile.py --clients 1 --hatch-rate 1 --num-request 10 --no-web; done"]
       nodeSelector:
         beta.kubernetes.io/os: linux
