@@ -40,3 +40,4 @@ spec:
               - NET_BIND_SERVICE
       nodeSelector:
         beta.kubernetes.io/os: linux
+      automountServiceAccountToken: false
