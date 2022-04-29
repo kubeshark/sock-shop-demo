@@ -3,7 +3,7 @@ import requests
 import traceback
 import logging
 
-ACCESS_TOKEN = '4c702fb4a535d46c25a4071ae95178bdd677db164ec73d90a5e4d4f17b02b0c2'
+ACCESS_TOKEN = '70f12f83180631fbcde8bf9c59a80ca7fdcf5bd35112e67281f10625d7fdc5b9'
 
 j = 0
 while True:
@@ -51,5 +51,4 @@ while True:
         logging.error(traceback.format_exc())
 
     # print(response.text)
-    
     time.sleep(3)

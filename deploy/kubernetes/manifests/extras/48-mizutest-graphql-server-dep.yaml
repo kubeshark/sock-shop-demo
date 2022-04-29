@@ -2,39 +2,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls
+  name: mizutest-graphql-server
   labels:
-    name: mizutest-outbound-tls
+    name: mizutest-graphql-server
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-outbound-tls
+      name: mizutest-graphql-server
   template:
     metadata:
       labels:
-        name: mizutest-outbound-tls
+        name: mizutest-graphql-server
     spec:
       containers:
-      - name: mizutest-outbound-tls
-        image: mertyildiran/mizutest-outbound-tls:latest
-        env:
-        - name: PYTHONUNBUFFERED
-          value: "1"
-        - name: PYTHONIOENCODING
-          value: "UTF-8"
+      - name: mizutest-graphql-server
+        image: mertyildiran/swapi-graphql:latest
         imagePullPolicy: Always
-        command: ["python3", "example.py"]
         resources:
           limits:
-            cpu: 50m
-            memory: 200Mi
+            cpu: 75m
+            memory: 100Mi
           requests:
             cpu: 10m
             memory: 10Mi
         ports:
-        - containerPort: 5672
+        - containerPort: 8080
         # securityContext:
         #   runAsNonRoot: true
         #   runAsUser: 10001

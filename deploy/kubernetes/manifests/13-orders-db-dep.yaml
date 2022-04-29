@@ -19,6 +19,13 @@ spec:
       containers:
       - name: orders-db
         image: mongo
+        resources:
+            limits:
+              cpu: 450m
+              memory: 100Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
         ports:
         - name: mongo
           containerPort: 27017
