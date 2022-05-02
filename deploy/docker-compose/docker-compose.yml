@@ -96,7 +96,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   shipping:
-    image: weaveworksdemos/shipping:0.4.8
+    image: up9inc/lightrun-weaveworksdemos-shipping:0.4.8
     hostname: shipping
     restart: always
     cap_drop:
