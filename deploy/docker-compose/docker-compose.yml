@@ -70,7 +70,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   orders:
-    image: weaveworksdemos/orders:0.4.7
+    image: up9inc/lightrun-weaveworksdemos-orders:0.4.7
     hostname: orders
     restart: always
     cap_drop:
