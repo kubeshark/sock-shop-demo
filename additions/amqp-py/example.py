@@ -18,7 +18,7 @@ HOST = 'rabbitmq'
 PORT = '5672'
 
 amqp_properties = {
-    'content_type': 'text/html',
+    'content_type': 'text/plain',
     'content_encoding': 'utf-8'
 }
 
