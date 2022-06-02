@@ -54,7 +54,7 @@ func main() {
 			panic(err)
 		}
 		// fmt.Printf("res: %+v\n", res)
-		body, err := io.ReadAll(res.Body)
+		_, err = io.ReadAll(res.Body)
 		if err != nil {
 			panic(err)
 		}

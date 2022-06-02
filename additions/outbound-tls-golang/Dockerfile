@@ -6,4 +6,3 @@ RUN apk update && apk add bash nano
 
 COPY main.go ./
 RUN go build -o main main.go
-COPY run.sh .
