@@ -21,7 +21,7 @@ func main() {
 	req.Header.Set("content-type", "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW")
 	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", ACCESS_TOKEN))
 	req.Header.Set("cache-control", "no-cache")
-	req.Header.Set("user-agent", "outbound-tls-golang")
+	req.Header.Set("x-powered-by", "golang")
 	res, err := client.Do(req)
 	if err != nil {
 		panic(err)
@@ -33,7 +33,7 @@ func main() {
 		panic(err)
 	}
 	req.Header.Set("cache-control", "no-cache")
-	req.Header.Set("user-agent", "outbound-tls-golang")
+	req.Header.Set("x-powered-by", "golang")
 	res, err = client.Do(req)
 	if err != nil {
 		panic(err)
@@ -45,7 +45,7 @@ func main() {
 		panic(err)
 	}
 	req.Header.Set("cache-control", "no-cache")
-	req.Header.Set("user-agent", "outbound-tls-golang")
+	req.Header.Set("x-powered-by", "golang")
 	res, err = client.Do(req)
 	if err != nil {
 		panic(err)

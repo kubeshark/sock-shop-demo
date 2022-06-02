@@ -17,7 +17,7 @@ while True:
         'content-type': "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
         'authorization': "Bearer %s" % ACCESS_TOKEN,
         'cache-control': "no-cache",
-        'user-agent': "outbound-tls-openssl",
+        'x-powered-by': "openssl",
     }
 
     try:
@@ -31,7 +31,7 @@ while True:
 
     headers = {
         'cache-control': "no-cache",
-        'user-agent': "outbound-tls-openssl",
+        'x-powered-by': "openssl",
     }
 
     try:
@@ -45,7 +45,7 @@ while True:
 
     headers = {
         'cache-control': "no-cache",
-        'user-agent': "outbound-tls-openssl",
+        'x-powered-by': "openssl",
     }
 
     try:
