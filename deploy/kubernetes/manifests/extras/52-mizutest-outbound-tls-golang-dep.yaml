@@ -2,30 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls
+  name: mizutest-outbound-tls-golang
   labels:
-    name: mizutest-outbound-tls
+    name: mizutest-outbound-tls-golang
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-outbound-tls
+      name: mizutest-outbound-tls-golang
   template:
     metadata:
       labels:
-        name: mizutest-outbound-tls
+        name: mizutest-outbound-tls-golang
     spec:
       containers:
-      - name: mizutest-outbound-tls
-        image: mertyildiran/mizutest-outbound-tls:latest
-        env:
-        - name: PYTHONUNBUFFERED
-          value: "1"
-        - name: PYTHONIOENCODING
-          value: "UTF-8"
+      - name: mizutest-outbound-tls-golang
+        image: mertyildiran/mizutest-outbound-tls-golang:latest
         imagePullPolicy: Always
-        command: ["python3", "example.py"]
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
         resources:
           limits:
             cpu: 50m
@@ -34,7 +29,7 @@ spec:
             cpu: 10m
             memory: 10Mi
         ports:
-        - containerPort: 5672
+        - containerPort: 80
         # securityContext:
         #   runAsNonRoot: true
         #   runAsUser: 10001
