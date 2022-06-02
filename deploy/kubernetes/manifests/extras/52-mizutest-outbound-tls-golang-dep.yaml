@@ -20,7 +20,7 @@ spec:
       - name: mizutest-outbound-tls-golang
         image: mertyildiran/mizutest-outbound-tls-golang:latest
         imagePullPolicy: Always
-        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        command: ["./main"]
         resources:
           limits:
             cpu: 50m
