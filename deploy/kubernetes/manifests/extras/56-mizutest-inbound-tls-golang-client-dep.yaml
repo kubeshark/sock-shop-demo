@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-inbound-tls-nodejs-server
+  name: mizutest-inbound-tls-golang-client
   labels:
-    name: mizutest-inbound-tls-nodejs-server
+    name: mizutest-inbound-tls-golang-client
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-inbound-tls-nodejs-server
+      name: mizutest-inbound-tls-golang-client
   template:
     metadata:
       labels:
-        name: mizutest-inbound-tls-nodejs-server
+        name: mizutest-inbound-tls-golang-client
     spec:
       containers:
-      - name: mizutest-inbound-tls-nodejs-server
-        image: mertyildiran/mizutest-inbound-tls-nodejs-server:latest
+      - name: mizutest-inbound-tls-golang-client
+        image: mertyildiran/mizutest-inbound-tls-golang-client:latest
         imagePullPolicy: Always
-        command: ["node", "main.js"]
+        command: ["./main"]
         resources:
           limits:
             cpu: 50m
@@ -29,7 +29,7 @@ spec:
             cpu: 10m
             memory: 10Mi
         ports:
-        - containerPort: 8000
+        - containerPort: 80
         # securityContext:
         #   runAsNonRoot: true
         #   runAsUser: 10001
