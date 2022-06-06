@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls-nodejs
+  name: mizutest-outbound-tls-nodejs-request
   labels:
-    name: mizutest-outbound-tls-nodejs
+    name: mizutest-outbound-tls-nodejs-request
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-outbound-tls-nodejs
+      name: mizutest-outbound-tls-nodejs-request
   template:
     metadata:
       labels:
-        name: mizutest-outbound-tls-nodejs
+        name: mizutest-outbound-tls-nodejs-request
     spec:
       containers:
-      - name: mizutest-outbound-tls-nodejs
-        image: mertyildiran/mizutest-outbound-tls-nodejs:latest
+      - name: mizutest-outbound-tls-nodejs-request
+        image: mertyildiran/mizutest-outbound-tls-nodejs-request:latest
         imagePullPolicy: Always
         command: ["node", "main.js"]
         resources:
