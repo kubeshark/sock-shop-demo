@@ -12,9 +12,9 @@ function doRequests() {
     var headers = {
         "authorization": `Bearer ${ACCESS_TOKEN}`,
         "cache-control": "no-cache",
-        "x-powered-by": "nodejs"
+        "x-powered-by": "nodejs-request"
     }
-    request.post({url:'http://gorest.co.in/public/v2/users', headers: headers, formData: formData}, function optionalCallback(err, httpResponse, body) {
+    request.post({url:'https://gorest.co.in/public/v2/users', headers: headers, formData: formData}, function optionalCallback(err, httpResponse, body) {
         if (err) {
             return console.error('request failed:', err);
         }
@@ -24,9 +24,9 @@ function doRequests() {
 
     var headers = {
         "cache-control": "no-cache",
-        "x-powered-by": "nodejs"
+        "x-powered-by": "nodejs-request"
     }
-    request.get({url:'http://gorest.co.in/public/v2/users', headers: headers}, function optionalCallback(err, httpResponse, body) {
+    request.get({url:'https://gorest.co.in/public/v2/users', headers: headers}, function optionalCallback(err, httpResponse, body) {
         if (err) {
             return console.error('request failed:', err);
         }
@@ -36,9 +36,9 @@ function doRequests() {
 
     var headers = {
         "cache-control": "no-cache",
-        "x-powered-by": "nodejs"
+        "x-powered-by": "nodejs-request"
     }
-    request.get({url:'http://gorest.co.in/public/v2/posts', headers: headers}, function optionalCallback(err, httpResponse, body) {
+    request.get({url:'https://gorest.co.in/public/v2/posts', headers: headers}, function optionalCallback(err, httpResponse, body) {
         if (err) {
             return console.error('request failed:', err);
         }
