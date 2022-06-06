@@ -1,6 +1,7 @@
 {
   "name": "outbound-tls-nodejs-fetch",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "main.js",
   "scripts": {
