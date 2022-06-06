@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const ACCESS_TOKEN = "c798b14b83d519ffc531ef816cfce81e7d53367dbd5c4d3171a06ad888fabdaf"
 
@@ -22,6 +22,7 @@ function doRequests() {
     .catch(function (error) {
         console.log(error);
     });
+
 
     axios.get('https://gorest.co.in/public/v2/users', {}, {
         headers: {
