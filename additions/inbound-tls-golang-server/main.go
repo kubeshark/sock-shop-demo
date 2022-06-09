@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"net"
 	"net/http"
 )
 
@@ -12,8 +12,22 @@ func HelloServer(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	http.HandleFunc("/hello", HelloServer)
-	err := http.ListenAndServeTLS(":443", "server.crt", "server.key", nil)
+	err := http.ListenAndServeTLS(":8083", "server.crt", "server.key", nil)
+	srv := &http.Server{Addr: ":8083", Handler: nil}
+	addr := srv.Addr
+	if addr == "" {
+		addr = ":https"
+	}
+
+	ln, err := net.Listen("tcp4", addr)
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		panic(err)
+	}
+
+	defer ln.Close()
+
+	err = srv.ServeTLS(ln, "server.crt", "server.key")
+	if err != nil {
+		panic(err)
 	}
 }

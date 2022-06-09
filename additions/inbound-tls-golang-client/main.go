@@ -1,18 +1,28 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"time"
 )
 
 func main() {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	client := &http.Client{}
+	var zeroDialer net.Dialer
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSNextProto:    map[string]func(string, *tls.Conn) http.RoundTripper{},
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				return zeroDialer.DialContext(ctx, "tcp4", addr)
+			},
+		},
+	}
 	for {
-		url := "https://mizutest-inbound-tls-golang-server:443/hello"
+		url := "https://mizutest-inbound-tls-golang-server:8083/hello"
 
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
