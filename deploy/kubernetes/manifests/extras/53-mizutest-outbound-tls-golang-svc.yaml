@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mizutest-outbound-tls-golang
+  name: mizutest-outbound-tls-golang-randomuser
   annotations:
         prometheus.io/scrape: 'true'
   labels:
-    name: mizutest-outbound-tls-golang
+    name: mizutest-outbound-tls-golang-randomuser
   namespace: sock-shop
 spec:
   ports:
@@ -14,4 +14,4 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: mizutest-outbound-tls-golang
+    name: mizutest-outbound-tls-golang-randomuser

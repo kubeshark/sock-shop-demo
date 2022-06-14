@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls-openssl
+  name: mizutest-outbound-tls-openssl-randomuser
   labels:
-    name: mizutest-outbound-tls-openssl
+    name: mizutest-outbound-tls-openssl-randomuser
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-outbound-tls-openssl
+      name: mizutest-outbound-tls-openssl-randomuser
   template:
     metadata:
       labels:
-        name: mizutest-outbound-tls-openssl
+        name: mizutest-outbound-tls-openssl-randomuser
     spec:
       containers:
-      - name: mizutest-outbound-tls-openssl
-        image: mertyildiran/mizutest-outbound-tls-openssl:latest
+      - name: mizutest-outbound-tls-openssl-randomuser
+        image: mertyildiran/mizutest-outbound-tls-openssl-randomuser:latest
         env:
         - name: PYTHONUNBUFFERED
           value: "1"

@@ -1745,23 +1745,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls
+  name: mizutest-outbound-tls-openssl-randomuser
   labels:
-    name: mizutest-outbound-tls
+    name: mizutest-outbound-tls-openssl-randomuser
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-outbound-tls
+      name: mizutest-outbound-tls-openssl-randomuser
   template:
     metadata:
       labels:
-        name: mizutest-outbound-tls
+        name: mizutest-outbound-tls-openssl-randomuser
     spec:
       containers:
-      - name: mizutest-outbound-tls
-        image: mertyildiran/mizutest-outbound-tls:latest
+      - name: mizutest-outbound-tls-openssl-randomuser
+        image: mertyildiran/mizutest-outbound-tls-openssl-randomuser:latest
         env:
         - name: PYTHONUNBUFFERED
           value: "1"
@@ -1777,7 +1777,7 @@ spec:
             cpu: 10m
             memory: 10Mi
         ports:
-        - containerPort: 5672
+        - containerPort: 80
         # securityContext:
         #   runAsNonRoot: true
         #   runAsUser: 10001
@@ -1793,11 +1793,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mizutest-outbound-tls
+  name: mizutest-outbound-tls-openssl-randomuser
   annotations:
         prometheus.io/scrape: 'true'
   labels:
-    name: mizutest-outbound-tls
+    name: mizutest-outbound-tls-openssl-randomuser
   namespace: sock-shop
 spec:
   ports:
@@ -1805,7 +1805,70 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    name: mizutest-outbound-tls
+    name: mizutest-outbound-tls-openssl-randomuser
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-outbound-tls-golang-randomuser
+  labels:
+    name: mizutest-outbound-tls-golang-randomuser
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-outbound-tls-golang-randomuser
+  template:
+    metadata:
+      labels:
+        name: mizutest-outbound-tls-golang-randomuser
+    spec:
+      containers:
+      - name: mizutest-outbound-tls-golang-randomuser
+        image: mertyildiran/mizutest-outbound-tls-golang-randomuser:latest
+        imagePullPolicy: Always
+        command: ["./main"]
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 80
+        # securityContext:
+        #   runAsNonRoot: true
+        #   runAsUser: 10001
+        #   capabilities:
+        #     drop:
+        #       - all
+        #     add:
+        #       - NET_BIND_SERVICE
+        #   readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-outbound-tls-golang-randomuser
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-outbound-tls-golang-randomuser
+  namespace: sock-shop
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 80
+  selector:
+    name: mizutest-outbound-tls-golang-randomuser
+
 
 
 ---

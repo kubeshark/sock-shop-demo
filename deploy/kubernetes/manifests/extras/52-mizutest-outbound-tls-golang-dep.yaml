@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls-golang
+  name: mizutest-outbound-tls-golang-randomuser
   labels:
-    name: mizutest-outbound-tls-golang
+    name: mizutest-outbound-tls-golang-randomuser
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-outbound-tls-golang
+      name: mizutest-outbound-tls-golang-randomuser
   template:
     metadata:
       labels:
-        name: mizutest-outbound-tls-golang
+        name: mizutest-outbound-tls-golang-randomuser
     spec:
       containers:
-      - name: mizutest-outbound-tls-golang
-        image: mertyildiran/mizutest-outbound-tls-golang:latest
+      - name: mizutest-outbound-tls-golang-randomuser
+        image: mertyildiran/mizutest-outbound-tls-golang-randomuser:latest
         imagePullPolicy: Always
         command: ["./main"]
         resources:
