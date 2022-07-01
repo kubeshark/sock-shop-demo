@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls-golang
+  name: mizutest-outbound-tls-golang-1-16
   labels:
-    name: mizutest-outbound-tls-golang
+    name: mizutest-outbound-tls-golang-1-16
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-outbound-tls-golang
+      name: mizutest-outbound-tls-golang-1-16
   template:
     metadata:
       labels:
-        name: mizutest-outbound-tls-golang
+        name: mizutest-outbound-tls-golang-1-16
     spec:
       containers:
-      - name: mizutest-outbound-tls-golang
-        image: mertyildiran/mizutest-outbound-tls-golang:latest
+      - name: mizutest-outbound-tls-golang-1-16
+        image: mertyildiran/mizutest-outbound-tls-golang-1.16:latest
         imagePullPolicy: Always
         command: ["./main"]
         resources:
