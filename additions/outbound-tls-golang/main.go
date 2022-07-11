@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -12,7 +15,17 @@ const ACCESS_TOKEN = "c798b14b83d519ffc531ef816cfce81e7d53367dbd5c4d3171a06ad888
 
 func main() {
 	j := 0
-	client := &http.Client{}
+	var zeroDialer net.Dialer
+	client := &http.Client{
+		Transport: &http.Transport{
+			MaxIdleConns:    -1,
+			TLSNextProto:    map[string]func(string, *tls.Conn) http.RoundTripper{},
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				return zeroDialer.DialContext(ctx, "tcp4", addr)
+			},
+		},
+	}
 	for {
 		j++
 
