@@ -12,7 +12,7 @@ Install from the single file manifest complete-demo.yaml:
 ```sh
 kubectl apply -f deploy/kubernetes/complete-demo.yaml
 # or directly from github
-kubectl apply -f https://raw.githubusercontent.com/up9inc/sock-shop-mizu-demo/master/deploy/kubernetes/complete-demo.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubeshark/sock-shop-demo/master/deploy/kubernetes/complete-demo.yaml
 ```
 
 Regenerate the complete-demo.yaml:
