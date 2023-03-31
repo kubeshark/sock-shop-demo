@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/microservices-demo/microservices-demo.svg?branch=master)](https://travis-ci.org/microservices-demo/microservices-demo)
-
-> Note: The source code of the images related to the additions for gRPC, AMQP, Kafka and Redis protocols can be found in the `additions` folder.
+> **Note:** The source code of the images related to the additions for gRPC, AMQP, Kafka and Redis protocols can be found in the `additions` folder.
 
 # Sock Shop : A Microservice Demo Application
 
@@ -16,18 +14,22 @@ The [deploy folder](./deploy/) contains scripts and instructions to provision th
 
 Please let us know if there is a platform that you would like to see supported.
 
-## Bugs, Feature Requests and Contributing
+## TLS/eBPF Capture Test
 
-We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions. See the [contribution information](.github/CONTRIBUTING.md) for more information.
+Start with a clean cluster using `minikube` and deploy the bare minimums:
 
-## Screenshot
+```shell
+minikube start --driver=virtualbox --cpus 4 --memory 8192
+kubectl apply -f deploy/kubernetes/manifests
+ls deploy/kubernetes/manifests/extras/*outbound-tls*  | xargs -Ifile kubectl apply -f file
+```
 
-![Sock Shop frontend](https://github.com/microservices-demo/microservices-demo.github.io/raw/master/assets/sockshop-frontend.png)
+Then run Kubeshark:
 
-## Visualizing the application
+```shell
+kubeshark tap -n sock-shop && kubeshark clean
+```
 
-Use [Weave Scope](http://weave.works/products/weave-scope/) or [Weave Cloud](http://cloud.weave.works/) to visualize the application once it's running in the selected [target platform](./deploy/).
+After approximately 1-2 minutes delay, you should start to see the encrypted traffic capture:
 
-![Sock Shop in Weave Scope](https://github.com/microservices-demo/microservices-demo.github.io/raw/master/assets/sockshop-scope.png)
-
-## 
+![TLS/eBPF Capture](/assets/tls_capture.png)
