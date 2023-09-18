@@ -1,11 +1,9 @@
-output "node_addresses" {
-  value = ["${aws_instance.ci-sockshop-k8s-node.*.public_dns}"]
+output "region" {
+  description = "AWS region"
+  value       = var.region
 }
 
-output "master_address" {
-  value = "${aws_instance.ci-sockshop-k8s-master.public_dns}"
-}
-
-output "sock_shop_address" {
-  value = "${aws_elb.ci-sockshop-k8s-elb.dns_name}"
-}
+# output "configure_kubectl" {
+#   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
+#   value       = module.eks_blueprints.configure_kubectl
+# }
