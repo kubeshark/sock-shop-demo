@@ -45,8 +45,8 @@ module "eks" {
       instance_types = ["m5.large"]
 
       min_size     = 1
-      max_size     = 2
-      desired_size = 1
+      max_size     = 5
+      desired_size = 3
 
       labels = {
         Which = "managed"

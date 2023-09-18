@@ -23,15 +23,16 @@ module "eks_blueprints_addons" {
 #   }
 
   enable_aws_load_balancer_controller    = true
-  enable_karpenter                       = true
   enable_kube_prometheus_stack           = true
   enable_metrics_server                  = true
   enable_external_secrets                = true
   enable_ingress_nginx                   = true
+  enable_argocd                          = true
   enable_cluster_proportional_autoscaler = false
   enable_external_dns                    = false
-  enable_cert_manager                    = false
-  #   cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/XXXXXXXXXXXXX"]
+  enable_karpenter                       = false
+  enable_cert_manager                    = true
+  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/Z0228234LL1EEPKD5KBY"]
 
   ingress_nginx = {
     values        = [templatefile("${path.module}/values/ingress-nginx.yaml", {})]
