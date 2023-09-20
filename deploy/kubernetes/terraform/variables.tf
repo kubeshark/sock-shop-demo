@@ -1,9 +1,9 @@
 variable "env_name" {
-  default = "dko-5"
+  default = "development"
 }
 
 variable "region" {
   description = "AWS region"
   type        = string
-  default     = "us-east-1"
+  default     = "us-east-2"
 }

@@ -23,16 +23,16 @@ module "eks_blueprints_addons" {
 #   }
 
   enable_aws_load_balancer_controller    = true
-  enable_kube_prometheus_stack           = true
+  enable_kube_prometheus_stack           = false
   enable_metrics_server                  = true
-  enable_external_secrets                = true
-  enable_ingress_nginx                   = true
+  enable_external_secrets                = false
+  enable_ingress_nginx                   = false
   enable_argocd                          = true
   enable_cluster_proportional_autoscaler = false
   enable_external_dns                    = false
   enable_karpenter                       = false
-  enable_cert_manager                    = true
-  cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/Z0228234LL1EEPKD5KBY"]
+  enable_cert_manager                    = false
+  # cert_manager_route53_hosted_zone_arns  = ["arn:aws:route53:::hostedzone/Z0228234LL1EEPKD5KBY"]
 
   ingress_nginx = {
     values        = [templatefile("${path.module}/values/ingress-nginx.yaml", {})]
@@ -58,4 +58,16 @@ module "eks_blueprints_addons" {
   tags = {
     Environment = "dev"
   }
+}
+
+resource "helm_release" "kubeshark" {
+  name = "kubeshark"
+  repository = "https://helm.kubeshark.co"
+  chart = "kubeshark"
+  values = [templatefile("${path.module}/values/kubeshark.yaml", {})]
+}
+
+resource "kubectl_manifest" "sock-shop" {
+  yaml_body = templatefile("${path.module}/values/sock-shop-demo.yaml", {})
+  wait_for_rollout = true
 }
