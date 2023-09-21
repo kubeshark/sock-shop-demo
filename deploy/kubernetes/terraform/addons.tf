@@ -1,3 +1,9 @@
+data "aws_acm_certificate" "kubeshark_crt" {
+  domain      = "*.kubehq.org"
+  statuses = ["ISSUED"]
+  most_recent = true
+}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0" #ensure to update this to the latest/desired version
@@ -7,27 +13,13 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-#   eks_addons = {
-#     aws-ebs-csi-driver = {
-#       most_recent = true
-#     }
-#     coredns = {
-#       most_recent = true
-#     }
-#     vpc-cni = {
-#       most_recent = true
-#     }
-#     kube-proxy = {
-#       most_recent = true
-#     }
-#   }
-
+  enable_kube_prometheus_stack           = var.enable_kube_prometheus_stack
+  enable_aws_cloudwatch_metrics          = var.enable_aws_cloudwatch_metrics
+  enable_ingress_nginx                   = var.enable_ingress_nginx
   enable_aws_load_balancer_controller    = true
-  enable_kube_prometheus_stack           = false
   enable_metrics_server                  = true
   enable_external_secrets                = false
-  enable_ingress_nginx                   = false
-  enable_argocd                          = true
+  enable_argocd                          = false
   enable_cluster_proportional_autoscaler = false
   enable_external_dns                    = false
   enable_karpenter                       = false
@@ -64,10 +56,14 @@ resource "helm_release" "kubeshark" {
   name = "kubeshark"
   repository = "https://helm.kubeshark.co"
   chart = "kubeshark"
-  values = [templatefile("${path.module}/values/kubeshark.yaml", {})]
+  values = [templatefile("${path.module}/values/kubeshark.yaml", {
+    certificate_arn = data.aws_acm_certificate.kubeshark_crt.arn
+  })]
+  count = var.enable_kubeshark ? 1 : 0
 }
 
-resource "kubectl_manifest" "sock-shop" {
-  yaml_body = templatefile("${path.module}/values/sock-shop-demo.yaml", {})
+resource "kubectl_manifest" "sock_shop" {
+  yaml_body = templatefile("${path.module}/../complete-demo.yaml", {})
   wait_for_rollout = true
+  count = var.enable_sock_shop ? 1 : 0
 }
