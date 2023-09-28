@@ -73,6 +73,11 @@ terraform {
   # backend "local" {
   #   path = "relative/path/to/terraform.tfstate"
   # }
+  backend "s3" {
+    bucket = "dko-6"
+    key    = "eks-demo"
+    region = "us-east-1"
+  }
 
   required_version = "~> 1.3"
 }

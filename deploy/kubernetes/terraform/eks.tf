@@ -36,6 +36,8 @@ module "eks" {
     }
   }
 
+  cloudwatch_log_group_retention_in_days = 1
+
   eks_managed_node_groups = {
     managed = {
       iam_role_name              = "${local.name}-managed" # Backwards compat
@@ -90,6 +92,11 @@ module "eks" {
       }
     }
   }
+
+  manage_aws_auth_configmap = true
+  aws_auth_roles = flatten([
+    module.admin_team.aws_auth_configmap_role,
+  ])
 
   tags = local.tags
 }

@@ -1,11 +1,11 @@
 variable "env_name" {
-  default = "development"
+  default = "dko-6"
 }
 
 variable "region" {
   description = "AWS region"
   type        = string
-  default     = "us-east-2"
+  default     = "us-east-1"
 }
 
 variable "enable_kubeshark" {
@@ -36,5 +36,11 @@ variable "enable_ingress_nginx" {
   description = "Enables Ingress Nginx installation"
   type = bool
   default = false
+}
+
+variable "role_name" {
+  description = "Default role name"
+  type = string
+  default = "AWSReservedSSO_AdministratorAccess_4ad944a45478ee7e"
 }
 

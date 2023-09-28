@@ -4,6 +4,8 @@ data "aws_acm_certificate" "kubeshark_crt" {
   most_recent = true
 }
 
+data "aws_caller_identity" "current" {}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0" #ensure to update this to the latest/desired version
@@ -47,8 +49,31 @@ module "eks_blueprints_addons" {
     ]
   }
 
+  aws_cloudwatch_metrics = {
+    max_history = 1
+  }
+
   tags = {
     Environment = "dev"
+  }
+}
+
+module "admin_team" {
+  source = "aws-ia/eks-blueprints-teams/aws"
+
+  name = "admin-team"
+
+  # Enables elevated, admin privileges for this team
+  enable_admin = true
+  users        = [
+    # "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}",
+    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/alongir",
+    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/Mert",
+    ]
+  cluster_arn  = module.eks.cluster_arn
+
+  tags = {
+    team = "admin"
   }
 }
 
