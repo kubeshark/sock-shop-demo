@@ -97,6 +97,9 @@ module "eks" {
   aws_auth_roles = flatten([
     module.admin_team.aws_auth_configmap_role,
   ])
+  aws_auth_users = flatten([
+    module.admin_team.aws_auth_configmap_role,
+  ])
 
   tags = local.tags
 }

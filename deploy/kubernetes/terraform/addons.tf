@@ -66,7 +66,7 @@ module "admin_team" {
   # Enables elevated, admin privileges for this team
   enable_admin = true
   users        = [
-    # "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}",
+    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}",
     "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/alongir",
     "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/Mert",
     ]

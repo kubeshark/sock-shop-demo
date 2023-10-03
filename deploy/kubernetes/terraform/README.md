@@ -27,14 +27,26 @@ This Terraform module enables easy creation of an Amazon Elastic Kubernetes Serv
    terraform destroy
    ```
 
+### State storage
+
+This module uses S3 to store the Terraform state. You can check the details of that bucket at `backend` on file `provider.tf`.
+
 ## Input Variables
 
-- `env_name` (string, optional): Sets the environment name (default: "development").
-- `region` (string, optional): Defines the AWS region where the EKS cluster will be deployed (default: "us-east-2").
+- `env_name` (string, optional): Sets the environment name (default: "dko-6").
+- `region` (string, optional): Defines the AWS region where the EKS cluster will be deployed (default: "us-east-1").
+- `enable_kubeshark`(string, optional): Enables Kubeshark installation (default: false)
+- `enable_sock_shop`(string, optional): Enables Sock Shop installation (default: false)
+- `enable_kube_prometheus_stack`(string, optional): Enables Prometheus Stack installation (default: true)
+- `enable_aws_cloudwatch_metrics`(string, optional): Enables CloudWhatch installation (default: true)
+- `enable_ingress_nginx`(string, optional): Enables Nginx installation (default: false)
+- `role_name`(string, optional): Default arn role name to be include into admin team
 
 ## Output
 
-This Terraform module does not produce any specific output, but it creates an EKS cluster in your AWS account.
+- `region`: The region where the cluster was created
+- `cluster_name`: The name of the cluster created
+- `configure_kubectl`: An aws-cli command to help you setup your kubeconfig file
 
 ## Contributions
 
