@@ -38,6 +38,11 @@ variable "enable_ingress_nginx" {
   default = false
 }
 
+variable "enable_istio" {
+  description = "Enables Istio installation"
+  type = bool
+  default = true
+}
 variable "role_name" {
   description = "Default role name"
   type = string

@@ -1,0 +1,6 @@
+tableManager:
+  retention_period: 1d
+
+monitoring:
+  dashboards:
+    enabled: true

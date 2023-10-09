@@ -96,9 +96,27 @@ module "eks" {
   manage_aws_auth_configmap = true
   aws_auth_roles = flatten([
     module.admin_team.aws_auth_configmap_role,
+    # {
+    #   groups = ["system:masters"]
+    #   rolearn = "arn:aws:iam::745696693350:role/AWSReservedSSO_AdministratorAccess_4ad944a45478ee7e"
+    #   username = "alongir"
+    # },{
+    #   groups = ["system:masters"]
+    #   rolearn = "arn:aws:iam::745696693350:role/AWSReservedSSO_AdministratorAccess_4ad944a45478ee7e"
+    #   username = "Mert"
+    # }
   ])
   aws_auth_users = flatten([
-    module.admin_team.aws_auth_configmap_role,
+    # module.admin_team.aws_auth_configmap_role,
+    {
+      groups = ["system:masters"]
+      userarn = "arn:aws:iam::745696693350:user/alongir"
+      username = "alongir"
+    },{
+      groups = ["system:masters"]
+      userarn = "arn:aws:iam::745696693350:user/Mert"
+      username = "Mert"
+    }
   ])
 
   tags = local.tags

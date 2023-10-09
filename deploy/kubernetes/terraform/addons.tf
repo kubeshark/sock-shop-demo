@@ -32,6 +32,10 @@ module "eks_blueprints_addons" {
     values        = [templatefile("${path.module}/values/ingress-nginx.yaml", {})]
   }
 
+  kube_prometheus_stack = {
+    values        = [templatefile("${path.module}/values/kube_prometheus_stack.yaml", {})]
+  }
+
   aws_load_balancer_controller = {
     set = [
       {
@@ -66,7 +70,7 @@ module "admin_team" {
   # Enables elevated, admin privileges for this team
   enable_admin = true
   users        = [
-    "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}",
+    # "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}",
     "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/alongir",
     "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/Mert",
     ]
@@ -91,4 +95,38 @@ resource "kubectl_manifest" "sock_shop" {
   yaml_body = templatefile("${path.module}/../complete-demo.yaml", {})
   wait_for_rollout = true
   count = var.enable_sock_shop ? 1 : 0
+}
+
+resource "helm_release" "istio" {
+  name = "istio-base"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  chart = "base"
+  namespace = "istio-system"
+  create_namespace = true
+  values = [templatefile("${path.module}/values/istio.yaml", {
+    defaultRevision = "default"
+  })]
+  count = var.enable_istio ? 1 : 0
+}
+
+resource "helm_release" "istiod" {
+  name = "istiod"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  chart = "istiod"
+  namespace = "istio-system"
+  create_namespace = true
+  values = [templatefile("${path.module}/values/istio.yaml", {
+    defaultRevision = "default"
+  })]
+  count = var.enable_istio ? 1 : 0
+  depends_on = [ helm_release.istio ]
+}
+
+resource "helm_release" "loki" {
+  name = "loki"
+  repository = "https://grafana.github.io/helm-charts"
+  chart = "loki-stack"
+  namespace = "kube-prometheus-stack"
+  depends_on = [ module.eks_blueprints_addons ]
+  values = [templatefile("${path.module}/values/loki.yaml", {})]
 }
