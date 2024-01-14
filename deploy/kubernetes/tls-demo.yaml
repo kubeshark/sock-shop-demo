@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: mizutest-outbound-tls-openssl
-        image: mertyildiran/mizutest-outbound-tls-openssl:latest
+        image: alongir/mizutest-outbound-tls-openssl:latest
         env:
         - name: PYTHONUNBUFFERED
           value: "1"
@@ -50,7 +50,7 @@ spec:
         #       - NET_BIND_SERVICE
         #   readOnlyRootFilesystem: true
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
@@ -88,7 +88,7 @@ spec:
     spec:
       containers:
       - name: mizutest-outbound-tls-golang
-        image: mertyildiran/mizutest-outbound-tls-golang:latest
+        image: alongir/mizutest-outbound-tls-golang:latest
         imagePullPolicy: Always
         command: ["./main"]
         resources:
@@ -110,7 +110,7 @@ spec:
         #       - NET_BIND_SERVICE
         #   readOnlyRootFilesystem: true
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
 ---
 apiVersion: v1
 kind: Service
