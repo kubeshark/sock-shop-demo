@@ -10,8 +10,8 @@ while True:
     j += 1
     # print("-----\n%d" % j)
 
+    # First request - POST
     url = "https://gorest.co.in/public/v2/users"
-
     payload = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\njohn.doe.%d@example.com\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\nJohn\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"gender\"\r\n\r\nmale\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"status\"\r\n\r\nactive\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--" % j
     headers = {
         'content-type': "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
@@ -22,13 +22,13 @@ while True:
 
     try:
         response = requests.request("POST", url, data=payload, headers=headers)
+        print(response.text)
+        response.close()
     except Exception as e:
         logging.error(traceback.format_exc())
 
-    # print(response.text)
-
+    # Second request - GET
     url = "https://gorest.co.in/public/v2/users"
-
     headers = {
         'cache-control': "no-cache",
         'x-powered-by': "openssl",
@@ -36,13 +36,13 @@ while True:
 
     try:
         response = requests.request("GET", url, headers=headers)
+        print(response.text)
+        response.close()
     except Exception as e:
         logging.error(traceback.format_exc())
 
-    # print(response.text)
-
+    # Third request - GET
     url = "https://gorest.co.in/public/v2/posts"
-
     headers = {
         'cache-control': "no-cache",
         'x-powered-by': "openssl",
@@ -50,8 +50,10 @@ while True:
 
     try:
         response = requests.request("GET", url, headers=headers)
+        print(response.text)
+        response.close()
     except Exception as e:
         logging.error(traceback.format_exc())
 
-    # print(response.text)
+    # Wait for 3 seconds before the next iteration
     time.sleep(3)

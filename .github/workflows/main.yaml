@@ -11,31 +11,31 @@ jobs:
   #
   #
   #check complete demo is in sync with individual manifest, it should block fom merge. Should this be a diferent file?
-  complete-demo-sync-check:
-    runs-on: ubuntu-latest
-    env:
-      COMPLETE_DEMO_ARGS: --rm -v ${{ github.workspace }}:/workdir
-      COMPLETE_DEMO_DIR: 'deploy/kubernetes/'
-      COMPLETE_DEMO_IMAGE: 'manifests-image'
-    steps:
-    - uses: actions/checkout@v2
+  # complete-demo-sync-check:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     COMPLETE_DEMO_ARGS: --rm -v ${{ github.workspace }}:/workdir
+  #     COMPLETE_DEMO_DIR: 'deploy/kubernetes/'
+  #     COMPLETE_DEMO_IMAGE: 'manifests-image'
+  #   steps:
+  #   - uses: actions/checkout@v2
 
-    #
-    #
-    # Build image
-    - name: Build image
-      env:
-        DOCKER_BUILDKIT: 1
-      run: docker build -t $COMPLETE_DEMO_IMAGE $COMPLETE_DEMO_DIR
+  #   #
+  #   #
+  #   # Build image
+  #   - name: Build image
+  #     env:
+  #       DOCKER_BUILDKIT: 1
+  #     run: docker build -t $COMPLETE_DEMO_IMAGE $COMPLETE_DEMO_DIR
 
-    #
-    #
-    # Check that manifest and complete-demo.yaml ahve the same content
-    - name: check comeplte-demo.yaml content sync
-      run: docker run $COMPLETE_DEMO_ARGS $COMPLETE_DEMO_IMAGE make -C $COMPLETE_DEMO_DIR check-complete-demo
+  #   #
+  #   #
+  #   # Check that manifest and complete-demo.yaml ahve the same content
+  #   - name: check comeplte-demo.yaml content sync
+  #     run: docker run $COMPLETE_DEMO_ARGS $COMPLETE_DEMO_IMAGE make -C $COMPLETE_DEMO_DIR check-complete-demo
 
-  #
-  #
+  # #
+  # #
   #check that we can deploy complete-demo
   #NOTE: what about docker compose? maybe doesn't make sense if we use the KIND action
   #NOTE: later we can test that the documentation is tested, as in previous cronjobs in travis

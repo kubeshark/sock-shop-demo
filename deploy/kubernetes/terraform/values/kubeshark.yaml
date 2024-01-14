@@ -1,0 +1,9 @@
+tap:
+  ingress:
+    enabled: true
+    classname: alb
+    host: demo.kubehq.org
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/certificate-arn : "${certificate_arn}"
