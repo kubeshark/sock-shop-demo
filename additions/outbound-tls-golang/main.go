@@ -59,8 +59,13 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		fmt.Printf("res: %+v\n", res)
+		res.Body.Close()
 
 		req, err = http.NewRequest("GET", "https://gorest.co.in/public/v2/users", nil)
 		if err != nil {
@@ -74,8 +79,13 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		fmt.Printf("res: %+v\n", res)
+		res.Body.Close()
 
 		req, err = http.NewRequest("GET", "https://gorest.co.in/public/v2/posts", nil)
 		if err != nil {
@@ -89,12 +99,17 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
-		fmt.Printf("res: %+v\n", res)
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		_, err = io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 		}
+		fmt.Printf("res: %+v\n", res)
+		res.Body.Close()
 
 		time.Sleep(3 * time.Second)
 	}
