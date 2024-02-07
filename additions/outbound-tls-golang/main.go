@@ -41,8 +41,13 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		fmt.Printf("res: %+v\n", res)
+		res.Body.Close()
 
 		payload := strings.NewReader(fmt.Sprintf("------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\njohn.doe.%d@example.com\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\nJohn\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"gender\"\r\n\r\nmale\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"status\"\r\n\r\nactive\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--", j))
 		req, err = http.NewRequest("POST", "https://gorest.co.in/public/v2/users", payload)
@@ -59,8 +64,13 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		fmt.Printf("res: %+v\n", res)
+		res.Body.Close()
 
 		req, err = http.NewRequest("GET", "https://gorest.co.in/public/v2/users", nil)
 		if err != nil {
@@ -74,8 +84,13 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		fmt.Printf("res: %+v\n", res)
+		res.Body.Close()
 
 		req, err = http.NewRequest("GET", "https://gorest.co.in/public/v2/posts", nil)
 		if err != nil {
@@ -89,12 +104,17 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		defer res.Body.Close()
-		fmt.Printf("res: %+v\n", res)
+		_, err = io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		_, err = io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 		}
+		fmt.Printf("res: %+v\n", res)
+		res.Body.Close()
 
 		time.Sleep(3 * time.Second)
 	}
