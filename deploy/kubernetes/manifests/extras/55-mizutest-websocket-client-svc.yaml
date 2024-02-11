@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-websocket-client
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-websocket-client
+  namespace: sock-shop
+spec:
+  selector:
+    name: mizutest-websocket-client

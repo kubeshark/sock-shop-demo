@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-websocket-client
+  labels:
+    name: mizutest-websocket-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-websocket-client
+  template:
+    metadata:
+      labels:
+        name: mizutest-websocket-client
+    spec:
+      containers:
+      - name: mizutest-websocket-client
+        image: mertyildiran/mizutest-websocket-client:latest
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: PYTHONIOENCODING
+          value: "UTF-8"
+        imagePullPolicy: Always
+        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        ports:
+        - containerPort: 5672
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
