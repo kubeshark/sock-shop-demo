@@ -9,5 +9,9 @@ metadata:
     name: mizutest-websocket-client
   namespace: sock-shop
 spec:
+  ports:
+    # the port that this service should serve on
+  - port: 5672
+    targetPort: 5672
   selector:
     name: mizutest-websocket-client
