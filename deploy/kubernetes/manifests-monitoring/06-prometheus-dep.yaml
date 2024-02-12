@@ -42,4 +42,4 @@ spec:
         configMap:
           name: prometheus-alertrules
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
