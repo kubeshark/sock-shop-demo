@@ -2,7 +2,7 @@ version: '2'
 
 services:
   front-end:
-    image: weaveworksdemos/front-end:0.3.12
+    image: up9inc/lightrun-weaveworksdemos-front-end:latest
     hostname: front-end
     restart: always
     cap_drop:
@@ -44,7 +44,7 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=socksdb
   carts:
-    image: weaveworksdemos/carts:0.4.8
+    image: up9inc/lightrun-weaveworksdemos-carts:0.4.8
     hostname: carts
     restart: always
     cap_drop:
@@ -70,7 +70,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   orders:
-    image: weaveworksdemos/orders:0.4.7
+    image: up9inc/lightrun-weaveworksdemos-orders:0.4.7
     hostname: orders
     restart: always
     cap_drop:
@@ -96,7 +96,7 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid
   shipping:
-    image: weaveworksdemos/shipping:0.4.8
+    image: up9inc/lightrun-weaveworksdemos-shipping:0.4.8
     hostname: shipping
     restart: always
     cap_drop:
@@ -109,7 +109,7 @@ services:
     environment:
       - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
   queue-master:
-    image: weaveworksdemos/queue-master:0.3.1
+    image: up9inc/lightrun-weaveworksdemos-queue-master:0.3.1
     hostname: queue-master
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
