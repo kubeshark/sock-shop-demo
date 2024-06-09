@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-sctp-server
+  annotations:
+        prometheus.io/scrape: 'true'
+  labels:
+    name: mizutest-sctp-server
+  namespace: sock-shop
+spec:
+  clusterIP: None # Headless
+  ports:
+    # the port that this service should serve on
+  - port: 50051
+    targetPort: 50051
+    protocol: SCTP
+  selector:
+    name: mizutest-sctp-server
