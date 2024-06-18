@@ -1,21 +1,19 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: shipping
   annotations:
     prometheus.io/scrape: 'true'
   labels:
-    name: shipping
     app: shipping
+    name: shipping
     version: v0.1.0
+  name: shipping
   namespace: sock-shop
 spec:
   ports:
-    # the port that this service should serve on
   - port: 80
     targetPort: 80
   selector:
-    name: shipping
     app: shipping
+    name: shipping
     version: v0.1.0

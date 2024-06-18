@@ -1,27 +1,25 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq
   annotations:
-    prometheus.io/scrape: 'true'
     prometheus.io/port: '9090'
+    prometheus.io/scrape: 'true'
   labels:
-    name: rabbitmq
     app: rabbitmq
+    name: rabbitmq
     version: v0.1.0
+  name: rabbitmq
   namespace: sock-shop
 spec:
   ports:
-    # the port that this service should serve on
-  - port: 5672
-    name: rabbitmq
+  - name: rabbitmq
+    port: 5672
     targetPort: 5672
-  - port: 9090
-    name: exporter
-    targetPort: exporter
+  - name: exporter
+    port: 9090
     protocol: TCP
+    targetPort: exporter
   selector:
-    name: rabbitmq
     app: rabbitmq
+    name: rabbitmq
     version: v0.1.0

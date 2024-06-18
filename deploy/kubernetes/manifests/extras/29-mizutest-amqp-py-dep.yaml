@@ -1,10 +1,11 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-amqp-py
   labels:
+    app: mizutest-amqp-py
     name: mizutest-amqp-py
+    version: v0.1.0
+  name: mizutest-amqp-py
   namespace: sock-shop
 spec:
   replicas: 1
@@ -14,18 +15,25 @@ spec:
   template:
     metadata:
       labels:
+        app: mizutest-amqp-py
         name: mizutest-amqp-py
+        version: v0.1.0
     spec:
       containers:
-      - name: mizutest-amqp-py
-        image: mertyildiran/mizutest-amqp-py:latest
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
         env:
         - name: PYTHONUNBUFFERED
-          value: "1"
+          value: '1'
         - name: PYTHONIOENCODING
-          value: "UTF-8"
+          value: UTF-8
+        image: mertyildiran/mizutest-amqp-py:latest
         imagePullPolicy: Always
-        command: ["sh", "-c",  "./run.sh > /dev/null 2>&1"]
+        name: mizutest-amqp-py
+        ports:
+        - containerPort: 5672
         resources:
           limits:
             cpu: 50m
@@ -33,16 +41,14 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-        ports:
-        - containerPort: 5672
         securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
       nodeSelector:
         kubernetes.io/os: linux

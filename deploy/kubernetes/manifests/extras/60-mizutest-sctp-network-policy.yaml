@@ -4,15 +4,15 @@ metadata:
   name: kubeshark-hub-network-policy
   namespace: sock-shop
 spec:
+  egress:
+  - {}
+  ingress:
+  - ports:
+    - port: 50051
+      protocol: SCTP
   podSelector:
     matchLabels:
       name: mizutest-sctp-server
   policyTypes:
-    - Ingress
-    - Egress
-  ingress:
-    - ports:
-        - protocol: SCTP
-          port: 50051
-  egress:
-    - {}
+  - Ingress
+  - Egress

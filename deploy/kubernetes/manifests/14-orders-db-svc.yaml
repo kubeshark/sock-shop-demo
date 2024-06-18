@@ -1,19 +1,17 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: orders-db
   labels:
+    app: orders-db
     name: orders-db
-    app: orders
     version: v0.1.0
+  name: orders-db
   namespace: sock-shop
 spec:
   ports:
-    # the port that this service should serve on
   - port: 27017
     targetPort: 27017
   selector:
-    name: orders-db
     app: orders
+    name: orders-db
     version: v0.1.0

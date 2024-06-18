@@ -1,19 +1,17 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalogue-db
   labels:
-    name: catalogue-db
     app: catalogue-db
+    name: catalogue-db
     version: v0.1.0
+  name: catalogue-db
   namespace: sock-shop
 spec:
   ports:
-    # the port that this service should serve on
   - port: 3306
     targetPort: 3306
   selector:
-    name: catalogue-db
     app: catalogue-db
+    name: catalogue-db
     version: v0.1.0
