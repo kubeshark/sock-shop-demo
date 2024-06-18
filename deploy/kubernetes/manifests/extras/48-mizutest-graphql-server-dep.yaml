@@ -1,10 +1,11 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-graphql-server
   labels:
+    app: mizutest-graphql-server
     name: mizutest-graphql-server
+    version: v0.1.0
+  name: mizutest-graphql-server
   namespace: sock-shop
 spec:
   replicas: 1
@@ -14,12 +15,16 @@ spec:
   template:
     metadata:
       labels:
+        app: mizutest-graphql-server
         name: mizutest-graphql-server
+        version: v0.1.0
     spec:
       containers:
-      - name: mizutest-graphql-server
-        image: mertyildiran/swapi-graphql:latest
+      - image: mertyildiran/swapi-graphql:latest
         imagePullPolicy: Always
+        name: mizutest-graphql-server
+        ports:
+        - containerPort: 8080
         resources:
           limits:
             cpu: 75m
@@ -27,16 +32,5 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-        ports:
-        - containerPort: 8080
-        # securityContext:
-        #   runAsNonRoot: true
-        #   runAsUser: 10001
-        #   capabilities:
-        #     drop:
-        #       - all
-        #     add:
-        #       - NET_BIND_SERVICE
-        #   readOnlyRootFilesystem: true
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

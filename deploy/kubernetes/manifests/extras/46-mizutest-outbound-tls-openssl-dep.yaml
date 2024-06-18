@@ -1,10 +1,11 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-outbound-tls-openssl
   labels:
+    app: mizutest-outbound-tls-openssl
     name: mizutest-outbound-tls-openssl
+    version: v0.1.0
+  name: mizutest-outbound-tls-openssl
   namespace: sock-shop
 spec:
   replicas: 1
@@ -14,18 +15,24 @@ spec:
   template:
     metadata:
       labels:
+        app: mizutest-outbound-tls-openssl
         name: mizutest-outbound-tls-openssl
+        version: v0.1.0
     spec:
       containers:
-      - name: mizutest-outbound-tls-openssl
-        image: mertyildiran/mizutest-outbound-tls-openssl:latest
+      - command:
+        - python3
+        - example.py
         env:
         - name: PYTHONUNBUFFERED
-          value: "1"
+          value: '1'
         - name: PYTHONIOENCODING
-          value: "UTF-8"
+          value: UTF-8
+        image: mertyildiran/mizutest-outbound-tls-openssl:latest
         imagePullPolicy: Always
-        command: ["python3", "example.py"]
+        name: mizutest-outbound-tls-openssl
+        ports:
+        - containerPort: 80
         resources:
           limits:
             cpu: 50m
@@ -33,16 +40,5 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-        ports:
-        - containerPort: 80
-        # securityContext:
-        #   runAsNonRoot: true
-        #   runAsUser: 10001
-        #   capabilities:
-        #     drop:
-        #       - all
-        #     add:
-        #       - NET_BIND_SERVICE
-        #   readOnlyRootFilesystem: true
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

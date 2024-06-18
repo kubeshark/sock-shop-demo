@@ -1,16 +1,16 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: mizutest-graphql-server
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: 'true'
   labels:
+    app: mizutest-graphql-server
     name: mizutest-graphql-server
+    version: v0.1.0
+  name: mizutest-graphql-server
   namespace: sock-shop
 spec:
   ports:
-    # the port that this service should serve on
   - port: 8080
     targetPort: 8080
   selector:

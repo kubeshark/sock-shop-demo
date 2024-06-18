@@ -1,43 +1,47 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-db
   labels:
+    app: user-db
     name: user-db
+    version: v0.1.0
+  name: user-db
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: user-db
       name: user-db
+      version: v0.1.0
   template:
     metadata:
       labels:
+        app: user-db
         name: user-db
+        version: v0.1.0
     spec:
       containers:
-      - name: user-db
-        image: weaveworksdemos/user-db:0.3.0
-
+      - image: weaveworksdemos/user-db:0.3.0
+        name: user-db
         ports:
-        - name: mongo
-          containerPort: 27017
+        - containerPort: 27017
+          name: mongo
         securityContext:
           capabilities:
-            drop:
-              - all
             add:
-              - CHOWN
-              - SETGID
-              - SETUID
+            - CHOWN
+            - SETGID
+            - SETUID
+            drop:
+            - all
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume

@@ -1,10 +1,11 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-sctp-server
   labels:
+    app: mizutest-sctp-server
     name: mizutest-sctp-server
+    version: v0.1.0
+  name: mizutest-sctp-server
   namespace: sock-shop
 spec:
   replicas: 1
@@ -14,18 +15,27 @@ spec:
   template:
     metadata:
       labels:
+        app: mizutest-sctp-server
         name: mizutest-sctp-server
+        version: v0.1.0
     spec:
       containers:
-      - name: mizutest-sctp-server
-        image: mertyildiran/mizutest-sctp-server:latest
+      - command:
+        - sh
+        - -c
+        - ./run.sh
         env:
         - name: PYTHONUNBUFFERED
-          value: "1"
+          value: '1'
         - name: PYTHONIOENCODING
-          value: "UTF-8"
+          value: UTF-8
+        image: mertyildiran/mizutest-sctp-server:latest
         imagePullPolicy: Always
-        command: ["sh", "-c",  "./run.sh"]
+        name: mizutest-sctp-server
+        ports:
+        - containerPort: 50051
+          hostPort: 50051
+          protocol: SCTP
         resources:
           limits:
             cpu: 75m
@@ -33,18 +43,14 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-        ports:
-        - containerPort: 50051
-          hostPort: 50051
-          protocol: SCTP
         securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

@@ -1,29 +1,37 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shipping
   labels:
+    app: shipping
     name: shipping
+    version: v0.1.0
+  name: shipping
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: shipping
       name: shipping
+      version: v0.1.0
   template:
     metadata:
       labels:
+        app: shipping
         name: shipping
+        version: v0.1.0
     spec:
       containers:
-      - name: shipping
+      - env:
+        - name: ZIPKIN
+          value: zipkin.jaeger.svc.cluster.local
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
         image: weaveworksdemos/shipping:0.4.8
-        env:
-         - name: ZIPKIN
-           value: zipkin.jaeger.svc.cluster.local
-         - name: JAVA_OPTS
-           value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+        name: shipping
+        ports:
+        - containerPort: 80
         resources:
           limits:
             cpu: 200m
@@ -31,23 +39,21 @@ spec:
           requests:
             cpu: 10m
             memory: 10Mi
-        ports:
-        - containerPort: 80
         securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 10001
-          capabilities:
-            drop:
-              - all
-            add:
-              - NET_BIND_SERVICE
-          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume

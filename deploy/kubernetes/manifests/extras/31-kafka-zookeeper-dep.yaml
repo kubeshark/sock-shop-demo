@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,11 +16,11 @@ spec:
         app: zookeeper
     spec:
       containers:
-      - image: library/zookeeper:3.4.13
+      - env:
+        - name: ZOO_MY_ID
+          value: '1'
+        image: library/zookeeper:3.4.13
         imagePullPolicy: IfNotPresent
         name: zookeeper
         ports:
         - containerPort: 2181
-        env:
-        - name: ZOO_MY_ID
-          value: "1"

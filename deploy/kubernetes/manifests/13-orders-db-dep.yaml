@@ -1,49 +1,54 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-db
   labels:
+    app: orders-db
     name: orders-db
+    version: v0.1.0
+  name: orders-db
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: orders-db
       name: orders-db
+      version: v0.1.0
   template:
     metadata:
       labels:
+        app: orders-db
         name: orders-db
+        version: v0.1.0
     spec:
       containers:
-      - name: orders-db
-        image: mongo
-        resources:
-            limits:
-              cpu: 450m
-              memory: 100Mi
-            requests:
-              cpu: 50m
-              memory: 50Mi
+      - image: mongo
+        name: orders-db
         ports:
-        - name: mongo
-          containerPort: 27017
+        - containerPort: 27017
+          name: mongo
+        resources:
+          limits:
+            cpu: 450m
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
         securityContext:
           capabilities:
-            drop:
-              - all
             add:
-              - CHOWN
-              - SETGID
-              - SETUID
+            - CHOWN
+            - SETGID
+            - SETUID
+            drop:
+            - all
           readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
