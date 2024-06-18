@@ -3,7 +3,7 @@ MANIFESTS = $(or $(shell printenv MANIFESTS), manifests)
 
 .PHONY: gen-complete-demo
 gen-complete-demo:
-	awk '{print}' $(shell find ${MANIFESTS} -type f | sort) > complete-demo.yaml
+	find ${MANIFESTS} -type f -name '*.yaml' | sort | xargs awk 'NR==1{print "---"} FNR==1 && NR!=1{print "---"} {print}' > complete-demo.yaml
 .PHONY: check-complete-demo
 check-complete-demo:
 	awk '{print}' $(shell find ${MANIFESTS} -type f | sort) | diff complete-demo.yaml -

@@ -11,7 +11,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: orders
+      app: payment
       name: payment
       version: v0.1.0
   template:

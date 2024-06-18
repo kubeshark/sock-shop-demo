@@ -1,7 +1,9 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: sock-shop
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -59,6 +61,7 @@ spec:
       - emptyDir:
           medium: Memory
         name: tmp-volume
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -78,6 +81,7 @@ spec:
     app: carts
     name: carts
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -125,6 +129,7 @@ spec:
       - emptyDir:
           medium: Memory
         name: tmp-volume
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -142,6 +147,7 @@ spec:
     app: carts-db
     name: carts-db
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -204,6 +210,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -223,6 +230,7 @@ spec:
     app: catalogue
     name: catalogue
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -259,6 +267,7 @@ spec:
           name: mysql
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -276,6 +285,7 @@ spec:
     app: catalogue-db
     name: catalogue-db
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -335,6 +345,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -356,6 +367,7 @@ spec:
     name: front-end
     version: v0.1.0
   type: LoadBalancer
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -413,6 +425,7 @@ spec:
       - emptyDir:
           medium: Memory
         name: tmp-volume
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -432,6 +445,7 @@ spec:
     app: orders
     name: orders
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -445,7 +459,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: orders
+      app: orders-db
       name: orders-db
       version: v0.1.0
   template:
@@ -486,6 +500,7 @@ spec:
       - emptyDir:
           medium: Memory
         name: tmp-volume
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -500,9 +515,10 @@ spec:
   - port: 27017
     targetPort: 27017
   selector:
-    app: orders
+    app: orders-db
     name: orders-db
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -516,7 +532,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: orders
+      app: payment
       name: payment
       version: v0.1.0
   template:
@@ -561,6 +577,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -580,6 +597,7 @@ spec:
     app: payment
     name: payment
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -621,6 +639,7 @@ spec:
             memory: 10Mi
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -640,6 +659,7 @@ spec:
     app: queue-master
     name: queue-master
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -690,6 +710,7 @@ spec:
           name: exporter
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -715,6 +736,7 @@ spec:
     app: rabbitmq
     name: rabbitmq
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -757,6 +779,7 @@ spec:
           readOnlyRootFilesystem: true
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -774,6 +797,7 @@ spec:
     app: session-db
     name: session-db
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -833,6 +857,7 @@ spec:
       - emptyDir:
           medium: Memory
         name: tmp-volume
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -852,6 +877,7 @@ spec:
     app: shipping
     name: shipping
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -913,6 +939,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -932,6 +959,7 @@ spec:
     app: user
     name: user
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -979,6 +1007,7 @@ spec:
       - emptyDir:
           medium: Memory
         name: tmp-volume
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -996,6 +1025,7 @@ spec:
     app: user-db
     name: user-db
     version: v0.1.0
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1050,6 +1080,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1067,6 +1098,7 @@ spec:
     targetPort: 5672
   selector:
     name: mizutest-amqp-py
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1093,6 +1125,7 @@ spec:
         name: zookeeper
         ports:
         - containerPort: 2181
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1108,6 +1141,7 @@ spec:
   selector:
     app: zookeeper
   type: NodePort
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -1150,6 +1184,7 @@ spec:
           name: plaintext
         - containerPort: 9999
           name: jmx
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1166,6 +1201,7 @@ spec:
     port: 9999
   selector:
     app: kafka
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1215,6 +1251,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1232,6 +1269,7 @@ spec:
     targetPort: 9092
   selector:
     name: mizutest-kafka-py
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1272,6 +1310,7 @@ spec:
             memory: 10Mi
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1289,6 +1328,7 @@ spec:
     targetPort: 9092
   selector:
     name: mizutest-kafka-go
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1329,6 +1369,7 @@ spec:
             memory: 10Mi
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1346,6 +1387,7 @@ spec:
     targetPort: 6379
   selector:
     name: mizutest-redis-go
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1400,6 +1442,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1417,6 +1460,7 @@ spec:
     targetPort: 50051
   selector:
     name: mizutest-grpc-py-server
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1471,6 +1515,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1488,6 +1533,7 @@ spec:
     targetPort: 50051
   selector:
     name: mizutest-grpc-py-client
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -1526,6 +1572,7 @@ spec:
         name: load-test
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1570,6 +1617,7 @@ spec:
             memory: 10Mi
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1587,6 +1635,7 @@ spec:
     targetPort: 80
   selector:
     name: mizutest-outbound-tls-openssl
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1623,6 +1672,7 @@ spec:
             memory: 10Mi
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1640,6 +1690,7 @@ spec:
     targetPort: 8080
   selector:
     name: mizutest-graphql-server
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1688,6 +1739,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1705,6 +1757,7 @@ spec:
     targetPort: 50051
   selector:
     name: mizutest-graphql-client
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1743,6 +1796,7 @@ spec:
             memory: 10Mi
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1760,6 +1814,7 @@ spec:
     targetPort: 80
   selector:
     name: mizutest-outbound-tls-golang
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1814,6 +1869,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1831,6 +1887,7 @@ spec:
     targetPort: 5672
   selector:
     name: mizutest-websocket-client
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1887,6 +1944,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1906,6 +1964,7 @@ spec:
     targetPort: 50051
   selector:
     name: mizutest-sctp-server
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1960,6 +2019,7 @@ spec:
           runAsUser: 10001
       nodeSelector:
         kubernetes.io/os: linux
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1977,6 +2037,7 @@ spec:
     targetPort: 50051
   selector:
     name: mizutest-sctp-client
+---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -1995,45 +2056,3 @@ spec:
   policyTypes:
   - Ingress
   - Egress
-import yaml
-import os
-
-def update_labels(node):
-    if isinstance(node, dict):
-        for key, value in node.items():
-            if key == 'labels' and 'name' in value:
-                name_value = value['name']
-                value['app'] = name_value
-                value['version'] = 'v0.1.0'
-            else:
-                update_labels(value)
-    elif isinstance(node, list):
-        for item in node:
-            update_labels(item)
-
-def process_file(file_path):
-    with open(file_path, 'r') as file:
-        documents = list(yaml.safe_load_all(file))
-
-    for document in documents:
-        update_labels(document)
-
-    with open(file_path, 'w') as file:
-        yaml.safe_dump_all(documents, file, default_flow_style=False)
-
-def find_yaml_files(root_dir):
-    yaml_files = []
-    for dirpath, _, filenames in os.walk(root_dir):
-        for filename in filenames:
-            if filename.endswith(('.yaml', '.yml')):
-                yaml_files.append(os.path.join(dirpath, filename))
-    return yaml_files
-
-if __name__ == "__main__":
-    root_directory = os.path.dirname(os.path.abspath(__file__))  # Current directory
-    yaml_files = find_yaml_files(root_directory)
-
-    for yaml_file in yaml_files:
-        process_file(yaml_file)
-
-    print("Update complete.")

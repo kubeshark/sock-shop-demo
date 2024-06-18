@@ -12,6 +12,6 @@ spec:
   - port: 27017
     targetPort: 27017
   selector:
-    app: orders
+    app: orders-db
     name: orders-db
     version: v0.1.0
