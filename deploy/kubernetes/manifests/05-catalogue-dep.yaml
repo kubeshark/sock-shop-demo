@@ -5,16 +5,22 @@ metadata:
   name: catalogue
   labels:
     name: catalogue
+    app: catalogue
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: catalogue
+      app: catalogue
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: catalogue
+        app: catalogue
+        version: v0.1.0
     spec:
       containers:
       - name: catalogue
@@ -53,4 +59,4 @@ spec:
           initialDelaySeconds: 180
           periodSeconds: 3
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

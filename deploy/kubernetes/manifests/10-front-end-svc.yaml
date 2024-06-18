@@ -4,9 +4,11 @@ kind: Service
 metadata:
   name: front-end
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: 'true'
   labels:
     name: front-end
+    app: front-end
+    version: v0.1.0
   namespace: sock-shop
 spec:
   type: LoadBalancer
@@ -16,3 +18,5 @@ spec:
     nodePort: 30001
   selector:
     name: front-end
+    app: front-end
+    version: v0.1.0

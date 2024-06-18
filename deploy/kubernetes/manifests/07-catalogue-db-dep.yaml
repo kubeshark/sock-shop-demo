@@ -5,16 +5,22 @@ metadata:
   name: catalogue-db
   labels:
     name: catalogue-db
+    app: catalogue-db
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: catalogue-db
+      app: catalogue-db
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: catalogue-db
+        app: catalogue-db
+        version: v0.1.0
     spec:
       containers:
       - name: catalogue-db
@@ -28,4 +34,4 @@ spec:
         - name: mysql
           containerPort: 3306
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

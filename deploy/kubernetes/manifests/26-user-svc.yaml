@@ -4,9 +4,11 @@ kind: Service
 metadata:
   name: user
   annotations:
-        prometheus.io/scrape: 'true'
+    prometheus.io/scrape: 'true'
   labels:
     name: user
+    app: user
+    version: v0.1.0
   namespace: sock-shop
 spec:
   ports:
@@ -15,4 +17,6 @@ spec:
     targetPort: 80
   selector:
     name: user
+    app: user
+    version: v0.1.0
 

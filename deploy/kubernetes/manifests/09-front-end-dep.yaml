@@ -4,15 +4,23 @@ kind: Deployment
 metadata:
   name: front-end
   namespace: sock-shop
+  labels:
+    name: front-end
+    app: front-end
+    version: v0.1.0
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: front-end
+      app: front-end
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: front-end
+        app: front-end
+        version: v0.1.0
     spec:
       containers:
       - name: front-end
@@ -49,4 +57,4 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 3
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

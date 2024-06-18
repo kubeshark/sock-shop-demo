@@ -5,16 +5,22 @@ metadata:
   name: user
   labels:
     name: user
+    app: user
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: user
+      app: user
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: user
+        app: user
+        version: v0.1.0
     spec:
       containers:
       - name: user
@@ -53,4 +59,4 @@ spec:
           initialDelaySeconds: 180
           periodSeconds: 3
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

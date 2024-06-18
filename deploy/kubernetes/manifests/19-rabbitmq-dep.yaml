@@ -5,16 +5,22 @@ metadata:
   name: rabbitmq
   labels:
     name: rabbitmq
+    app: rabbitmq
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: rabbitmq
+      app: rabbitmq
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: rabbitmq
+        app: rabbitmq
+        version: v0.1.0
       annotations:
         prometheus.io/scrape: "false"
     spec:
@@ -42,4 +48,4 @@ spec:
         - containerPort: 9090
           name: exporter
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

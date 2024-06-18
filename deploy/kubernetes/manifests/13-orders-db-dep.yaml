@@ -5,16 +5,22 @@ metadata:
   name: orders-db
   labels:
     name: orders-db
+    app: orders
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: orders-db
+      app: orders
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: orders-db
+        app: orders
+        version: v0.1.0
     spec:
       containers:
       - name: orders-db
@@ -46,4 +52,4 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

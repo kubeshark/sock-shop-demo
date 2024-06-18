@@ -5,16 +5,22 @@ metadata:
   name: shipping
   labels:
     name: shipping
+    app: shipping
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: shipping
+      app: shipping
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: shipping
+        app: shipping
+        version: v0.1.0
     spec:
       containers:
       - name: shipping
@@ -50,4 +56,4 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

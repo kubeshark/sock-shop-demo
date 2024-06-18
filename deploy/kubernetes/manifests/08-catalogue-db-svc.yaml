@@ -5,6 +5,8 @@ metadata:
   name: catalogue-db
   labels:
     name: catalogue-db
+    app: catalogue-db
+    version: v0.1.0
   namespace: sock-shop
 spec:
   ports:
@@ -13,3 +15,5 @@ spec:
     targetPort: 3306
   selector:
     name: catalogue-db
+    app: catalogue-db
+    version: v0.1.0

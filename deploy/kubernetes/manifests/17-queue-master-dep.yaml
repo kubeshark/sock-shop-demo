@@ -5,16 +5,22 @@ metadata:
   name: queue-master
   labels:
     name: queue-master
+    app: queue-master
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: queue-master
+      app: queue-master
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: queue-master
+        app: queue-master
+        version: v0.1.0
     spec:
       containers:
       - name: queue-master
@@ -32,4 +38,4 @@ spec:
         ports:
         - containerPort: 80
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

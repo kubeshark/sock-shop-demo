@@ -5,16 +5,22 @@ metadata:
   name: carts-db
   labels:
     name: carts-db
+    app: carts-db
+    version: v0.1.0
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: carts-db
+      app: carts-db
+      version: v0.1.0
   template:
     metadata:
       labels:
         name: carts-db
+        app: carts-db
+        version: v0.1.0
     spec:
       containers:
       - name: carts-db
@@ -39,4 +45,4 @@ spec:
           emptyDir:
             medium: Memory
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux

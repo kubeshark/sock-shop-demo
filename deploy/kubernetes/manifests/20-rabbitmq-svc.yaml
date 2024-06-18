@@ -4,10 +4,12 @@ kind: Service
 metadata:
   name: rabbitmq
   annotations:
-        prometheus.io/scrape: 'true'
-        prometheus.io/port: '9090'
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9090'
   labels:
     name: rabbitmq
+    app: rabbitmq
+    version: v0.1.0
   namespace: sock-shop
 spec:
   ports:
@@ -21,3 +23,5 @@ spec:
     protocol: TCP
   selector:
     name: rabbitmq
+    app: rabbitmq
+    version: v0.1.0
