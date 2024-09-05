@@ -359,7 +359,7 @@ metadata:
   namespace: sock-shop
 spec:
   ports:
-  - nodePort: 30001
+  - nodePort: 30002
     port: 80
     targetPort: 8079
   selector:
