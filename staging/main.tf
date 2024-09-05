@@ -130,7 +130,7 @@ resource "aws_elb" "microservices-demo-staging-k8s" {
 
   listener {
     lb_port = 80
-    instance_port = 30001
+    instance_port = 30002
     lb_protocol = "http"
     instance_protocol = "http"
   }
