@@ -1840,13 +1840,13 @@ spec:
       - command:
         - sh
         - -c
-        - ./run.sh > /dev/null 2>&1
+        - ./run.sh # > /dev/null 2>&1
         env:
         - name: PYTHONUNBUFFERED
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-websocket-client:latest
+        image: kubeshark/mizutest-websocket-client:latest
         imagePullPolicy: Always
         name: mizutest-websocket-client
         ports:

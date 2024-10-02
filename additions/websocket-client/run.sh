@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 example.py
+python3 -u example.py
