@@ -22,7 +22,7 @@ spec:
       containers:
       - command:
         - ./main
-        image: mertyildiran/mizutest-outbound-tls-golang:latest
+        image: kubeshark/mizutest-outbound-tls-golang:latest
         imagePullPolicy: Always
         name: mizutest-outbound-tls-golang
         ports:
