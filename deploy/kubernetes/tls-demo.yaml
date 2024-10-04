@@ -88,7 +88,7 @@ spec:
     spec:
       containers:
       - name: mizutest-outbound-tls-golang
-        image: alongir/mizutest-outbound-tls-golang:latest
+        image: kubeshark/mizutest-outbound-tls-golang:latest
         imagePullPolicy: Always
         command: ["./main"]
         resources:

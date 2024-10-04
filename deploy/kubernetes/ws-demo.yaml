@@ -1,0 +1,78 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sock-shop
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-websocket-client
+    name: mizutest-websocket-client
+    version: v0.1.0
+  name: mizutest-websocket-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-websocket-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-websocket-client
+        name: mizutest-websocket-client
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh # > /dev/null 2>&1
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: kubeshark/mizutest-websocket-client:latest
+        imagePullPolicy: Always
+        name: mizutest-websocket-client
+        ports:
+        - containerPort: 5672
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-websocket-client
+    name: mizutest-websocket-client
+    version: v0.1.0
+  name: mizutest-websocket-client
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+  selector:
+    name: mizutest-websocket-client

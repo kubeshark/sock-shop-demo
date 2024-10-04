@@ -29,7 +29,9 @@ func main() {
 	for {
 		j++
 
-		req, err := http.NewRequest("GET", "https://gorest.co.in/public/v2/not-found", nil)
+		// Include the index 'j' in the query parameter of the URL
+		getURL := fmt.Sprintf("https://gorest.co.in/public/v2/not-found?index=%d", j)
+		req, err := http.NewRequest("GET", getURL, nil)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -72,7 +74,9 @@ func main() {
 		fmt.Printf("res: %+v\n", res)
 		res.Body.Close()
 
-		req, err = http.NewRequest("GET", "https://gorest.co.in/public/v2/users", nil)
+		// Include the index 'j' in the query parameter of the GET request for users
+		getUsersURL := fmt.Sprintf("https://gorest.co.in/public/v2/users?index=%d", j)
+		req, err = http.NewRequest("GET", getUsersURL, nil)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -92,7 +96,9 @@ func main() {
 		fmt.Printf("res: %+v\n", res)
 		res.Body.Close()
 
-		req, err = http.NewRequest("GET", "https://gorest.co.in/public/v2/posts", nil)
+		// Include the index 'j' in the query parameter of the GET request for posts
+		getPostsURL := fmt.Sprintf("https://gorest.co.in/public/v2/posts?index=%d", j)
+		req, err = http.NewRequest("GET", getPostsURL, nil)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -100,11 +106,6 @@ func main() {
 		req.Header.Set("cache-control", "no-cache")
 		req.Header.Set("x-powered-by", "golang")
 		res, err = client.Do(req)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		_, err = io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 			continue
