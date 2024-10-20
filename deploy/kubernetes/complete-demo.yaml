@@ -12,7 +12,7 @@ metadata:
     name: carts
     version: v0.1.0
   name: carts
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -72,7 +72,7 @@ metadata:
     name: carts
     version: v0.1.0
   name: carts
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -90,7 +90,7 @@ metadata:
     name: carts-db
     version: v0.1.0
   name: carts-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -138,7 +138,7 @@ metadata:
     name: carts-db
     version: v0.1.0
   name: carts-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 27017
@@ -156,7 +156,7 @@ metadata:
     name: catalogue
     version: v0.1.0
   name: catalogue
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -221,7 +221,7 @@ metadata:
     name: catalogue
     version: v0.1.0
   name: catalogue
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -239,7 +239,7 @@ metadata:
     name: catalogue-db
     version: v0.1.0
   name: catalogue-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -276,7 +276,7 @@ metadata:
     name: catalogue-db
     version: v0.1.0
   name: catalogue-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 3306
@@ -294,7 +294,7 @@ metadata:
     name: front-end
     version: v0.1.0
   name: front-end
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -356,7 +356,7 @@ metadata:
     name: front-end
     version: v0.1.0
   name: front-end
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - nodePort: 30001
@@ -376,7 +376,7 @@ metadata:
     name: orders
     version: v0.1.0
   name: orders
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -436,7 +436,7 @@ metadata:
     name: orders
     version: v0.1.0
   name: orders
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -454,7 +454,7 @@ metadata:
     name: orders-db
     version: v0.1.0
   name: orders-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -509,7 +509,7 @@ metadata:
     name: orders-db
     version: v0.1.0
   name: orders-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 27017
@@ -527,7 +527,7 @@ metadata:
     name: payment
     version: v0.1.0
   name: payment
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -588,7 +588,7 @@ metadata:
     name: payment
     version: v0.1.0
   name: payment
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -606,7 +606,7 @@ metadata:
     name: queue-master
     version: v0.1.0
   name: queue-master
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -650,7 +650,7 @@ metadata:
     name: queue-master
     version: v0.1.0
   name: queue-master
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -668,7 +668,7 @@ metadata:
     name: rabbitmq
     version: v0.1.0
   name: rabbitmq
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -722,7 +722,7 @@ metadata:
     name: rabbitmq
     version: v0.1.0
   name: rabbitmq
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - name: rabbitmq
@@ -745,7 +745,7 @@ metadata:
     name: session-db
     version: v0.1.0
   name: session-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -788,7 +788,7 @@ metadata:
     name: session-db
     version: v0.1.0
   name: session-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 6379
@@ -806,7 +806,7 @@ metadata:
     name: shipping
     version: v0.1.0
   name: shipping
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -868,7 +868,7 @@ metadata:
     name: shipping
     version: v0.1.0
   name: shipping
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -886,7 +886,7 @@ metadata:
     name: user
     version: v0.1.0
   name: user
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -950,7 +950,7 @@ metadata:
     name: user
     version: v0.1.0
   name: user
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -968,7 +968,7 @@ metadata:
     name: user-db
     version: v0.1.0
   name: user-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1016,7 +1016,7 @@ metadata:
     name: user-db
     version: v0.1.0
   name: user-db
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 27017
@@ -1034,7 +1034,7 @@ metadata:
     name: mizutest-amqp-py
     version: v0.1.0
   name: mizutest-amqp-py
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1091,7 +1091,7 @@ metadata:
     name: mizutest-amqp-py
     version: v0.1.0
   name: mizutest-amqp-py
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 5672
@@ -1105,7 +1105,7 @@ metadata:
   labels:
     app: zookeeper
   name: zookeeper
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1132,7 +1132,7 @@ metadata:
   labels:
     app: zookeeper-service
   name: zookeeper-service
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - name: zookeeper-port
@@ -1146,7 +1146,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: kafka
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -1191,7 +1191,7 @@ metadata:
   labels:
     app: kafka
   name: kafka
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   clusterIP: None
   ports:
@@ -1210,7 +1210,7 @@ metadata:
     name: mizutest-kafka-py
     version: v0.1.0
   name: mizutest-kafka-py
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1262,7 +1262,7 @@ metadata:
     name: mizutest-kafka-py
     version: v0.1.0
   name: mizutest-kafka-py
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 9092
@@ -1278,7 +1278,7 @@ metadata:
     name: mizutest-kafka-go
     version: v0.1.0
   name: mizutest-kafka-go
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1321,7 +1321,7 @@ metadata:
     name: mizutest-kafka-go
     version: v0.1.0
   name: mizutest-kafka-go
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 9092
@@ -1337,7 +1337,7 @@ metadata:
     name: mizutest-redis-go
     version: v0.1.0
   name: mizutest-redis-go
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1380,7 +1380,7 @@ metadata:
     name: mizutest-redis-go
     version: v0.1.0
   name: mizutest-redis-go
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 6379
@@ -1396,7 +1396,7 @@ metadata:
     name: mizutest-grpc-py-server
     version: v0.1.0
   name: mizutest-grpc-py-server
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1453,7 +1453,7 @@ metadata:
     name: mizutest-grpc-py-server
     version: v0.1.0
   name: mizutest-grpc-py-server
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 50051
@@ -1469,7 +1469,7 @@ metadata:
     name: mizutest-grpc-py-client
     version: v0.1.0
   name: mizutest-grpc-py-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1526,7 +1526,7 @@ metadata:
     name: mizutest-grpc-py-client
     version: v0.1.0
   name: mizutest-grpc-py-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 50051
@@ -1547,7 +1547,7 @@ metadata:
     name: load-test
     version: v0.1.0
   name: load-test
-  namespace: sock-shop-envoy
+  namespace: loadtest
 spec:
   replicas: 1
   selector:
@@ -1581,7 +1581,7 @@ metadata:
     name: mizutest-outbound-tls-openssl
     version: v0.1.0
   name: mizutest-outbound-tls-openssl
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1628,7 +1628,7 @@ metadata:
     name: mizutest-outbound-tls-openssl
     version: v0.1.0
   name: mizutest-outbound-tls-openssl
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -1644,7 +1644,7 @@ metadata:
     name: mizutest-graphql-server
     version: v0.1.0
   name: mizutest-graphql-server
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1683,7 +1683,7 @@ metadata:
     name: mizutest-graphql-server
     version: v0.1.0
   name: mizutest-graphql-server
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 8080
@@ -1699,7 +1699,7 @@ metadata:
     name: mizutest-graphql-client
     version: v0.1.0
   name: mizutest-graphql-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1750,7 +1750,7 @@ metadata:
     name: mizutest-graphql-client
     version: v0.1.0
   name: mizutest-graphql-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 50051
@@ -1766,7 +1766,7 @@ metadata:
     name: mizutest-outbound-tls-golang
     version: v0.1.0
   name: mizutest-outbound-tls-golang
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1807,7 +1807,7 @@ metadata:
     name: mizutest-outbound-tls-golang
     version: v0.1.0
   name: mizutest-outbound-tls-golang
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 80
@@ -1823,7 +1823,7 @@ metadata:
     name: mizutest-websocket-client
     version: v0.1.0
   name: mizutest-websocket-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1880,7 +1880,7 @@ metadata:
     name: mizutest-websocket-client
     version: v0.1.0
   name: mizutest-websocket-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 5672
@@ -1896,7 +1896,7 @@ metadata:
     name: mizutest-sctp-server
     version: v0.1.0
   name: mizutest-sctp-server
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -1955,7 +1955,7 @@ metadata:
     name: mizutest-sctp-server
     version: v0.1.0
   name: mizutest-sctp-server
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   clusterIP: None
   ports:
@@ -1973,7 +1973,7 @@ metadata:
     name: mizutest-sctp-client
     version: v0.1.0
   name: mizutest-sctp-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   replicas: 1
   selector:
@@ -2030,7 +2030,7 @@ metadata:
     name: mizutest-sctp-client
     version: v0.1.0
   name: mizutest-sctp-client
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   ports:
   - port: 50051
@@ -2042,7 +2042,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: kubeshark-hub-network-policy
-  namespace: sock-shop-envoy
+  namespace: sock-shop
 spec:
   egress:
   - {}
