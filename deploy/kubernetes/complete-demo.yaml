@@ -2037,22 +2037,3 @@ spec:
     targetPort: 50051
   selector:
     name: mizutest-sctp-client
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: kubeshark-hub-network-policy
-  namespace: sock-shop
-spec:
-  egress:
-  - {}
-  ingress:
-  - ports:
-    - port: 50051
-      protocol: SCTP
-  podSelector:
-    matchLabels:
-      name: mizutest-sctp-server
-  policyTypes:
-  - Ingress
-  - Egress

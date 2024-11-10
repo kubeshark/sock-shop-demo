@@ -23,7 +23,7 @@ spec:
       - command:
         - sh
         - -c
-        - ./run.sh # > /dev/null 2>&1
+        - ./run.sh true # > /dev/null 2>&1
         env:
         - name: PYTHONUNBUFFERED
           value: '1'

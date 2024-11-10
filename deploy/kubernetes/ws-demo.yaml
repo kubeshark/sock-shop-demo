@@ -29,7 +29,7 @@ spec:
       - command:
         - sh
         - -c
-        - ./run.sh # > /dev/null 2>&1
+        - ./run.sh --compressed false  --server ws://10.0.20.136
         env:
         - name: PYTHONUNBUFFERED
           value: '1'
@@ -39,7 +39,7 @@ spec:
         imagePullPolicy: Always
         name: mizutest-websocket-client
         ports:
-        - containerPort: 5672
+        - containerPort: 80
         resources:
           limits:
             cpu: 50m
@@ -59,20 +59,46 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
 ---
+# Deployment for the WebSocket server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocket-server-deployment
+  namespace: sock-shop
+  labels:
+    app: websocket-server
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: websocket-server
+  template:
+    metadata:
+      labels:
+        app: websocket-server
+    spec:
+      containers:
+      - name: websocket-server-container
+        image: kubeshark/mizutest-websocket-server:latest  # Replace with your actual image name and version
+        ports:
+        - containerPort: 80  # Port exposed by your WebSocket server inside the container
+        env:
+        - name: PORT
+          value: "80"  # The port the app listens on, passed via environment variable
+---
+# Service to expose the WebSocket server within the sock-shop namespace
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    prometheus.io/scrape: 'true'
-  labels:
-    app: mizutest-websocket-client
-    name: mizutest-websocket-client
-    version: v0.1.0
-  name: mizutest-websocket-client
+  name: websocket-server-service
   namespace: sock-shop
+  labels:
+    app: websocket-server
 spec:
-  ports:
-  - port: 5672
-    targetPort: 5672
   selector:
-    name: mizutest-websocket-client
+    app: websocket-server
+  ports:
+  - protocol: TCP
+    port: 80          # Port the service exposes (external port)
+    targetPort: 80    # The port the WebSocket server listens on inside the container
+  type: ClusterIP  # This makes the service accessible only within the cluster

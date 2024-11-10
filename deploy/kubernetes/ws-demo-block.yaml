@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-egress-ws-client
+  namespace: sock-shop  # specify the namespace if different
+spec:
+  podSelector:
+    matchLabels:
+      app: mizutest-websocket-client # label of the pod you want to block egress for
+  policyTypes:
+  - Egress
+  egress: []  # Empty egress block means no egress is allowed
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-ingress-ws-server
+  namespace: sock-shop  # specify the namespace if different
+spec:
+  podSelector:
+    matchLabels:
+      app: websocket-server # label of the pod you want to block ingress for
+  policyTypes:
+  - Ingress
+  ingress: []  # Empty ingress block means no ingress is allowed

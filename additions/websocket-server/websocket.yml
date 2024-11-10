@@ -1,0 +1,50 @@
+# Namespace definition (if the namespace doesn't already exist)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sock-shop
+
+---
+# Deployment for the WebSocket server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocket-server-deployment
+  namespace: sock-shop
+  labels:
+    app: websocket-server
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: websocket-server
+  template:
+    metadata:
+      labels:
+        app: websocket-server
+    spec:
+      containers:
+      - name: websocket-server-container
+        image: kubeshark/mizutest-websocket-server:latest  # Replace with your actual image name and version
+        ports:
+        - containerPort: 8765  # Port exposed by your WebSocket server inside the container
+        env:
+        - name: PORT
+          value: "8765"  # The port the app listens on, passed via environment variable
+---
+# Service to expose the WebSocket server within the sock-shop namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: websocket-server-service
+  namespace: sock-shop
+  labels:
+    app: websocket-server
+spec:
+  selector:
+    app: websocket-server
+  ports:
+  - protocol: TCP
+    port: 80          # Port the service exposes (external port)
+    targetPort: 8765   # The port the WebSocket server listens on inside the container
+  type: ClusterIP  # This makes the service accessible only within the cluster
