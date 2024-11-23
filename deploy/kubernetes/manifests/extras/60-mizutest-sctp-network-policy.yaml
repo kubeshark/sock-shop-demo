@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: kubeshark-hub-network-policy
+  name: mizutest-sctp-server
   namespace: sock-shop
 spec:
   egress:
