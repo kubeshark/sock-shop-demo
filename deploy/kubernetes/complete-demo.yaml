@@ -2061,9 +2061,10 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: openldap
+  name: ldap-server-v3
   labels:
     app: openldap
+    protocol: v3
 spec:
   replicas: 1
   selector:
@@ -2073,6 +2074,7 @@ spec:
     metadata:
       labels:
         app: openldap
+        protocol: v3
     spec:
       containers:
         - name: openldap
@@ -2083,32 +2085,37 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: openldap
+  name: ldap-server-v3
   labels:
     app: openldap
+    protocol: v3
 spec:
   ports:
     - port: 389
       targetPort: 389
   selector:
     app: openldap
+    protocol: v3
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ldap-client
+  name: ldap-client-v3
   labels:
     app: ldap-client
+    protocol: v3
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: ldap-client
+      protocol: v3
   template:
     metadata:
       labels:
         app: ldap-client
+        protocol: v3
     spec:
       containers:
         - name: ldap-client
@@ -2122,7 +2129,7 @@ spec:
           - -baseDN
           - "dc=example,dc=org"
           - -server
-          - openldap
+          - ldap-server-v3
 ---
 apiVersion: v1
 kind: Service
@@ -2130,10 +2137,12 @@ metadata:
   name: ldap-client
   labels:
     app: ldap-client
+    protocol: v3
 spec:
   ports:
     - port: 8080
       targetPort: 8080
   selector:
     app: ldap-client
+    protocol: v3
   type: ClusterIP
