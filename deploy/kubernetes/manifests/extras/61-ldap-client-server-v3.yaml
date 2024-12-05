@@ -60,7 +60,7 @@ spec:
     spec:
       containers:
         - name: ldap-client
-          image: kubehq/ldap-demo:client-v3-v0.1.0
+          image: kubeshark/mizutest-ldap-go:latest
           imagePullPolicy: Always
           args:
           - -password
