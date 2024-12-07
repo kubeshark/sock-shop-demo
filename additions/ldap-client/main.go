@@ -105,6 +105,44 @@ func main() {
 		}
 		log.Printf("User %s modified successfully.\n", randomUsername)
 
+		// Search the user
+		searchReq := ldap.NewSearchRequest(
+			userDN,
+			ldap.ScopeWholeSubtree,
+			0,
+			0,
+			0,
+			false,
+			fmt.Sprintf("(CN=%s)", ldap.EscapeFilter(randomUsername)),
+			[]string{
+				"sAMAccountName",
+				"objectClass",
+				"sn",
+				"userPassword",
+			},
+			[]ldap.Control{},
+		)
+		searchResult, err := conn.Search(searchReq)
+		if err != nil {
+			log.Printf("Failed to search the user %s: %v\n", randomUsername, err)
+			continue
+		}
+		log.Printf(
+			"User %s search results: %+v\n",
+			randomUsername,
+			searchResult.Entries[0],
+		)
+		log.Printf(
+			"User %s searched attributes: %s:%+v %s:%+v %s:%+v\n",
+			randomUsername,
+			searchResult.Entries[0].Attributes[0].Name,
+			searchResult.Entries[0].Attributes[0].Values,
+			searchResult.Entries[0].Attributes[1].Name,
+			searchResult.Entries[0].Attributes[1].Values,
+			searchResult.Entries[0].Attributes[2].Name,
+			searchResult.Entries[0].Attributes[2].Values,
+		)
+
 		// Delete the user
 		delRequest := ldap.NewDelRequest(userDN, nil)
 		err = conn.Del(delRequest)
