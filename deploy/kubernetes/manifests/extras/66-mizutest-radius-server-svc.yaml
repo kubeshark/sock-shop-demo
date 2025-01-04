@@ -12,6 +12,7 @@ metadata:
 spec:
   ports:
   - port: 1812
+    protocol: UDP
     targetPort: 1812
   selector:
     name: mizutest-radius-server
