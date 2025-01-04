@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldap-client-v3
+  labels:
+    app: ldap-client
+    protocol: v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ldap-client
+      protocol: v3
+  template:
+    metadata:
+      labels:
+        app: ldap-client
+        protocol: v3
+    spec:
+      containers:
+        - name: ldap-client
+          image: kubeshark/mizutest-ldap-go:latest
+          imagePullPolicy: Always
+          args:
+          - -password
+          - admin
+          - -username
+          - "cn=admin,dc=example,dc=org"
+          - -baseDN
+          - "dc=example,dc=org"
+          - -server
+          - ldap-server-v3

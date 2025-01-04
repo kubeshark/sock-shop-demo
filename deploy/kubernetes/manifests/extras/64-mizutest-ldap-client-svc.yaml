@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ldap-client
+  labels:
+    app: ldap-client
+    protocol: v3
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: ldap-client
+    protocol: v3
+  type: ClusterIP
