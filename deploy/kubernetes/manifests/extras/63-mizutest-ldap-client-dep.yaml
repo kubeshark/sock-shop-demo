@@ -31,4 +31,4 @@ spec:
           - -baseDN
           - "dc=example,dc=org"
           - -server
-          - ldap-server-v3
+          - mizutest-ldap-server

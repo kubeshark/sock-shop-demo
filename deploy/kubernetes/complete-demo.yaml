@@ -2060,24 +2060,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mizutest-openldap
+  name: mizutest-ldap-server
   namespace: sock-shop
   labels:
-    app: mizutest-openldap
+    app: mizutest-ldap-server
     protocol: v3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mizutest-openldap
+      app: mizutest-ldap-server
   template:
     metadata:
       labels:
-        app: mizutest-openldap
+        app: mizutest-ldap-server
         protocol: v3
     spec:
       containers:
-        - name: mizutest-openldap
+        - name: mizutest-ldap-server
           image: osixia/openldap:1.5.0
           ports:
             - containerPort: 389
@@ -2085,17 +2085,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mizutest-openldap
+  name: mizutest-ldap-server
   namespace: sock-shop
   labels:
-    app: mizutest-openldap
+    app: mizutest-ldap-server
     protocol: v3
 spec:
   ports:
     - port: 389
       targetPort: 389
   selector:
-    app: mizutest-openldap
+    app: mizutest-ldap-server
     protocol: v3
   type: ClusterIP
 ---
@@ -2131,7 +2131,7 @@ spec:
           - -baseDN
           - "dc=example,dc=org"
           - -server
-          - ldap-server-v3
+          - mizutest-ldap-server
 ---
 apiVersion: v1
 kind: Service

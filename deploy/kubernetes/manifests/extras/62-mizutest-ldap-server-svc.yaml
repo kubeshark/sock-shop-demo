@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mizutest-openldap
+  name: mizutest-ldap-server
   namespace: sock-shop
   labels:
-    app: mizutest-openldap
+    app: mizutest-ldap-server
     protocol: v3
 spec:
   ports:
     - port: 389
       targetPort: 389
   selector:
-    app: mizutest-openldap
+    app: mizutest-ldap-server
     protocol: v3
   type: ClusterIP
