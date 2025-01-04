@@ -2,23 +2,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ldap-server-v3
+  name: mizutest-openldap
+  namespace: sock-shop
   labels:
-    app: openldap
+    app: mizutest-openldap
     protocol: v3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: openldap
+      app: mizutest-openldap
   template:
     metadata:
       labels:
-        app: openldap
+        app: mizutest-openldap
         protocol: v3
     spec:
       containers:
-        - name: openldap
+        - name: mizutest-openldap
           image: osixia/openldap:1.5.0
           ports:
             - containerPort: 389

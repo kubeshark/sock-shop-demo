@@ -2,24 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ldap-client-v3
+  name: mizutest-ldap-client
+  namespace: sock-shop
   labels:
-    app: ldap-client
+    app: mizutest-ldap-client
     protocol: v3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ldap-client
+      app: mizutest-ldap-client
       protocol: v3
   template:
     metadata:
       labels:
-        app: ldap-client
+        app: mizutest-ldap-client
         protocol: v3
     spec:
       containers:
-        - name: ldap-client
+        - name: mizutest-ldap-client
           image: kubeshark/mizutest-ldap-go:latest
           imagePullPolicy: Always
           args:

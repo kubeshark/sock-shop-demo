@@ -2057,27 +2057,27 @@ spec:
   - Ingress
   - Egress
 ---
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ldap-server-v3
+  name: mizutest-openldap
+  namespace: sock-shop
   labels:
-    app: openldap
+    app: mizutest-openldap
     protocol: v3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: openldap
+      app: mizutest-openldap
   template:
     metadata:
       labels:
-        app: openldap
+        app: mizutest-openldap
         protocol: v3
     spec:
       containers:
-        - name: openldap
+        - name: mizutest-openldap
           image: osixia/openldap:1.5.0
           ports:
             - containerPort: 389
@@ -2085,40 +2085,42 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ldap-server-v3
+  name: mizutest-openldap
+  namespace: sock-shop
   labels:
-    app: openldap
+    app: mizutest-openldap
     protocol: v3
 spec:
   ports:
     - port: 389
       targetPort: 389
   selector:
-    app: openldap
+    app: mizutest-openldap
     protocol: v3
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ldap-client-v3
+  name: mizutest-ldap-client
+  namespace: sock-shop
   labels:
-    app: ldap-client
+    app: mizutest-ldap-client
     protocol: v3
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ldap-client
+      app: mizutest-ldap-client
       protocol: v3
   template:
     metadata:
       labels:
-        app: ldap-client
+        app: mizutest-ldap-client
         protocol: v3
     spec:
       containers:
-        - name: ldap-client
+        - name: mizutest-ldap-client
           image: kubeshark/mizutest-ldap-go:latest
           imagePullPolicy: Always
           args:
@@ -2134,15 +2136,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ldap-client
+  name: mizutest-ldap-client
+  namespace: sock-shop
   labels:
-    app: ldap-client
+    app: mizutest-ldap-client
     protocol: v3
 spec:
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: ldap-client
+    app: mizutest-ldap-client
     protocol: v3
   type: ClusterIP
