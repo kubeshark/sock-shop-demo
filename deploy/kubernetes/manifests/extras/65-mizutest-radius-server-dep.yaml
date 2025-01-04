@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-radius-server
+    name: mizutest-radius-server
+    version: v0.1.0
+  name: mizutest-radius-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-radius-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-radius-server
+        name: mizutest-radius-server
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-radius-server
+          image: kubeshark/mizutest-radius-server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 1812
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux

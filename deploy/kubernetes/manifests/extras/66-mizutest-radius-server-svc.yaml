@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-radius-server
+    name: mizutest-radius-server
+    version: v0.1.0
+  name: mizutest-radius-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 1812
+    targetPort: 1812
+  selector:
+    name: mizutest-radius-server

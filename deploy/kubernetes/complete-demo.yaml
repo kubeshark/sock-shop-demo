@@ -2149,3 +2149,97 @@ spec:
     app: mizutest-ldap-client
     protocol: v3
   type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-radius-server
+    name: mizutest-radius-server
+    version: v0.1.0
+  name: mizutest-radius-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-radius-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-radius-server
+        name: mizutest-radius-server
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-radius-server
+          image: kubeshark/mizutest-radius-server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 1812
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-radius-server
+    name: mizutest-radius-server
+    version: v0.1.0
+  name: mizutest-radius-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 1812
+    targetPort: 1812
+  selector:
+    name: mizutest-radius-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-radius-client
+    name: mizutest-radius-client
+    version: v0.1.0
+  name: mizutest-radius-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-radius-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-radius-client
+        name: mizutest-radius-client
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-radius-client
+          image: kubeshark/mizutest-radius-client:latest
+          imagePullPolicy: Always
+          args:
+          - -server
+          - mizutest-radius-server
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
