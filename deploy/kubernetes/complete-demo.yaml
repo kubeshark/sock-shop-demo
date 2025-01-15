@@ -2244,3 +2244,97 @@ spec:
               memory: 10Mi
       nodeSelector:
         kubernetes.io/os: linux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-diameter-server
+    name: mizutest-diameter-server
+    version: v0.1.0
+  name: mizutest-diameter-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-diameter-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-diameter-server
+        name: mizutest-diameter-server
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-diameter-server
+          image: kubeshark/mizutest-diameter-server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3868
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-diameter-server
+    name: mizutest-diameter-server
+    version: v0.1.0
+  name: mizutest-diameter-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 3868
+    protocol: TCP
+    targetPort: 3868
+  selector:
+    name: mizutest-diameter-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-diameter-client
+    name: mizutest-diameter-client
+    version: v0.1.0
+  name: mizutest-diameter-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-diameter-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-diameter-client
+        name: mizutest-diameter-client
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-diameter-client
+          image: kubeshark/mizutest-diameter-client:latest
+          imagePullPolicy: Always
+          args:
+          - -addr
+          - "mizutest-diameter-server:3868"
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
