@@ -39,6 +39,7 @@ func main() {
 	certFile := flag.String("cert_file", "", "tls certificate file (optional)")
 	keyFile := flag.String("key_file", "", "tls key file (optional)")
 	silent := flag.Bool("s", false, "silent mode, useful for benchmarks")
+	networkType := flag.String("network_type", "tcp", "protocol type tcp/sctp")
 	flag.Parse()
 
 	// Load our custom dictionary on top of the default one, which
@@ -70,7 +71,7 @@ func main() {
 		go func() { log.Fatal(http.ListenAndServe(*ppaddr, nil)) }()
 	}
 
-	err = listen(*addr, *certFile, *keyFile, mux)
+	err = listen(*addr, *certFile, *keyFile, mux, *networkType)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,14 +83,14 @@ func printErrors(ec <-chan *diam.ErrorReport) {
 	}
 }
 
-func listen(addr, cert, key string, handler diam.Handler) error {
+func listen(addr, cert, key string, handler diam.Handler, networkType string) error {
 	// Start listening for connections.
 	if len(cert) > 0 && len(key) > 0 {
 		log.Println("Starting secure diameter server on", addr)
 		return diam.ListenAndServeTLS(addr, cert, key, handler, nil)
 	}
 	log.Println("Starting diameter server on", addr)
-	return diam.ListenAndServe(addr, handler, nil)
+	return diam.ListenAndServeNetwork(networkType, addr, handler, nil)
 }
 
 func handleHMR(silent bool) diam.HandlerFunc {

@@ -2,30 +2,32 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: mizutest-diameter-client
-    name: mizutest-diameter-client
+    app: mizutest-diameter-sctp-server
+    name: mizutest-diameter-sctp-server
     version: v0.1.0
-  name: mizutest-diameter-client
+  name: mizutest-diameter-sctp-server
   namespace: sock-shop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mizutest-diameter-client
+      name: mizutest-diameter-sctp-server
   template:
     metadata:
       labels:
-        app: mizutest-diameter-client
-        name: mizutest-diameter-client
+        app: mizutest-diameter-sctp-server
+        name: mizutest-diameter-sctp-server
         version: v0.1.0
     spec:
       containers:
-        - name: mizutest-diameter-client
-          image: kubeshark/mizutest-diameter-client:latest
+        - name: mizutest-diameter-sctp-server
+          image: kubeshark/mizutest-diameter-server:latest
           imagePullPolicy: Always
           args:
-          - -addr
-          - "mizutest-diameter-server:3868"
+          - -network_type
+          - sctp
+          ports:
+          - containerPort: 3868
           resources:
             limits:
               cpu: 75m

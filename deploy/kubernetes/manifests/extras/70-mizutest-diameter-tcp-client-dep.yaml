@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-diameter-tcp-client
+    name: mizutest-diameter-tcp-client
+    version: v0.1.0
+  name: mizutest-diameter-tcp-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-diameter-tcp-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-diameter-tcp-client
+        name: mizutest-diameter-tcp-client
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-diameter-tcp-client
+          image: kubeshark/mizutest-diameter-client:latest
+          imagePullPolicy: Always
+          args:
+          - -addr
+          - "mizutest-diameter-tcp-server:3868"
+          - network_type
+          - tcp
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux

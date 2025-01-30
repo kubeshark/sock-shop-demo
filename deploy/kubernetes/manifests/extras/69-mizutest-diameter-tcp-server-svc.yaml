@@ -4,10 +4,10 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
   labels:
-    app: mizutest-diameter-server
-    name: mizutest-diameter-server
+    app: mizutest-diameter-tcp-server
+    name: mizutest-diameter-tcp-server
     version: v0.1.0
-  name: mizutest-diameter-server
+  name: mizutest-diameter-tcp-server
   namespace: sock-shop
 spec:
   ports:
@@ -15,4 +15,4 @@ spec:
     protocol: TCP
     targetPort: 3868
   selector:
-    name: mizutest-diameter-server
+    name: mizutest-diameter-tcp-server
