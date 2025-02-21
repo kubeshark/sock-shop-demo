@@ -2332,7 +2332,7 @@ spec:
           args:
           - -addr
           - "mizutest-diameter-tcp-server:3868"
-          - network_type
+          - -network_type
           - tcp
           resources:
             limits:
@@ -2431,7 +2431,7 @@ spec:
           args:
           - -addr
           - "mizutest-diameter-sctp-server:3868"
-          - network_type
+          - -network_type
           - sctp
           resources:
             limits:
