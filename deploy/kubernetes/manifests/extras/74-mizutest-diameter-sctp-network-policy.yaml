@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mizutest-diameter-sctp-server
+  namespace: sock-shop
+spec:
+  egress:
+  - {}
+  ingress:
+  - ports:
+    - port: 3868
+      protocol: SCTP
+  podSelector:
+    matchLabels:
+      name: mizutest-diameter-sctp-server
+  policyTypes:
+  - Ingress
+  - Egress
