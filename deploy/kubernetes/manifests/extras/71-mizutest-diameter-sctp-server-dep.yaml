@@ -24,8 +24,6 @@ spec:
           image: kubeshark/mizutest-diameter-server:latest
           imagePullPolicy: Always
           args:
-          - -addr
-          - ":3868"
           - -network_type
           - sctp
           ports:
