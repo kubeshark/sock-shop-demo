@@ -1,0 +1,2466 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sock-shop
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: carts
+    name: carts
+    version: v0.1.0
+  name: carts
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: carts
+      name: carts
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: carts
+        name: carts
+        version: v0.1.0
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/carts:0.4.8
+        name: carts
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 300m
+            memory: 500Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: carts
+    name: carts
+    version: v0.1.0
+  name: carts
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: carts
+    name: carts
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: carts-db
+    name: carts-db
+    version: v0.1.0
+  name: carts-db
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: carts-db
+      name: carts-db
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: carts-db
+        name: carts-db
+        version: v0.1.0
+    spec:
+      containers:
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mongo
+        name: carts-db
+        ports:
+        - containerPort: 27017
+          name: mongo
+        securityContext:
+          capabilities:
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: carts-db
+    name: carts-db
+    version: v0.1.0
+  name: carts-db
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: carts-db
+    name: carts-db
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: catalogue
+    name: catalogue
+    version: v0.1.0
+  name: catalogue
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalogue
+      name: catalogue
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: catalogue
+        name: catalogue
+        version: v0.1.0
+    spec:
+      containers:
+      - args:
+        - -port=80
+        command:
+        - /app
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/catalogue:0.3.5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        name: catalogue
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: catalogue
+    name: catalogue
+    version: v0.1.0
+  name: catalogue
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: catalogue
+    name: catalogue
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: catalogue-db
+    name: catalogue-db
+    version: v0.1.0
+  name: catalogue-db
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalogue-db
+      name: catalogue-db
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: catalogue-db
+        name: catalogue-db
+        version: v0.1.0
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: fake_password
+        - name: MYSQL_DATABASE
+          value: socksdb
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/catalogue-db:0.3.0
+        name: catalogue-db
+        ports:
+        - containerPort: 3306
+          name: mysql
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: catalogue-db
+    name: catalogue-db
+    version: v0.1.0
+  name: catalogue-db
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: catalogue-db
+    name: catalogue-db
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: front-end
+    name: front-end
+    version: v0.1.0
+  name: front-end
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-end
+      name: front-end
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: front-end
+        name: front-end
+        version: v0.1.0
+    spec:
+      containers:
+      - env:
+        - name: SESSION_REDIS
+          value: 'true'
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/front-end:0.3.12
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8079
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        name: front-end
+        ports:
+        - containerPort: 8079
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8079
+          initialDelaySeconds: 30
+          periodSeconds: 3
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1000Mi
+          requests:
+            cpu: 100m
+            memory: 300Mi
+        securityContext:
+          capabilities:
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: front-end
+    name: front-end
+    version: v0.1.0
+  name: front-end
+  namespace: sock-shop
+spec:
+  ports:
+  - nodePort: 30001
+    port: 80
+    targetPort: 8079
+  selector:
+    app: front-end
+    name: front-end
+    version: v0.1.0
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: orders
+    name: orders
+    version: v0.1.0
+  name: orders
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+      name: orders
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: orders
+        name: orders
+        version: v0.1.0
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/orders:0.4.7
+        name: orders
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: orders
+    name: orders
+    version: v0.1.0
+  name: orders
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: orders
+    name: orders
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: orders-db
+    name: orders-db
+    version: v0.1.0
+  name: orders-db
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-db
+      name: orders-db
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: orders-db
+        name: orders-db
+        version: v0.1.0
+    spec:
+      containers:
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mongo
+        name: orders-db
+        ports:
+        - containerPort: 27017
+          name: mongo
+        resources:
+          limits:
+            cpu: 450m
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        securityContext:
+          capabilities:
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: orders-db
+    name: orders-db
+    version: v0.1.0
+  name: orders-db
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: orders-db
+    name: orders-db
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: payment
+    name: payment
+    version: v0.1.0
+  name: payment
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment
+      name: payment
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: payment
+        name: payment
+        version: v0.1.0
+    spec:
+      containers:
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/payment:0.4.3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        name: payment
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: payment
+    name: payment
+    version: v0.1.0
+  name: payment
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: payment
+    name: payment
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: queue-master
+    name: queue-master
+    version: v0.1.0
+  name: queue-master
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: queue-master
+      name: queue-master
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: queue-master
+        name: queue-master
+        version: v0.1.0
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/queue-master:0.3.1
+        name: queue-master
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 150m
+            memory: 500Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: queue-master
+    name: queue-master
+    version: v0.1.0
+  name: queue-master
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: queue-master
+    name: queue-master
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rabbitmq
+    name: rabbitmq
+    version: v0.1.0
+  name: rabbitmq
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+      name: rabbitmq
+      version: v0.1.0
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: 'false'
+      labels:
+        app: rabbitmq
+        name: rabbitmq
+        version: v0.1.0
+    spec:
+      containers:
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/rabbitmq:3.6.8-management
+        name: rabbitmq
+        ports:
+        - containerPort: 15672
+          name: management
+        - containerPort: 5672
+          name: rabbitmq
+        securityContext:
+          capabilities:
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+            - DAC_OVERRIDE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kbudde/rabbitmq-exporter
+        name: rabbitmq-exporter
+        ports:
+        - containerPort: 9090
+          name: exporter
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: '9090'
+    prometheus.io/scrape: 'true'
+  labels:
+    app: rabbitmq
+    name: rabbitmq
+    version: v0.1.0
+  name: rabbitmq
+  namespace: sock-shop
+spec:
+  ports:
+  - name: rabbitmq
+    port: 5672
+    targetPort: 5672
+  - name: exporter
+    port: 9090
+    protocol: TCP
+    targetPort: exporter
+  selector:
+    app: rabbitmq
+    name: rabbitmq
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: session-db
+    name: session-db
+    version: v0.1.0
+  name: session-db
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session-db
+      name: session-db
+      version: v0.1.0
+  template:
+    metadata:
+      annotations:
+        prometheus.io.scrape: 'false'
+      labels:
+        app: session-db
+        name: session-db
+        version: v0.1.0
+    spec:
+      containers:
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/redis:alpine
+        name: session-db
+        ports:
+        - containerPort: 6379
+          name: redis
+        securityContext:
+          capabilities:
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: session-db
+    name: session-db
+    version: v0.1.0
+  name: session-db
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: session-db
+    name: session-db
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: shipping
+    name: shipping
+    version: v0.1.0
+  name: shipping
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shipping
+      name: shipping
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: shipping
+        name: shipping
+        version: v0.1.0
+    spec:
+      containers:
+      - env:
+        - name: ZIPKIN
+          value: zipkin.jaeger.svc.cluster.local
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/shipping:0.4.8
+        name: shipping
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 200m
+            memory: 500Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: shipping
+    name: shipping
+    version: v0.1.0
+  name: shipping
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: shipping
+    name: shipping
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: user
+    name: user
+    version: v0.1.0
+  name: user
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+      name: user
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: user
+        name: user
+        version: v0.1.0
+    spec:
+      containers:
+      - env:
+        - name: mongo
+          value: user-db:27017
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/user:0.4.7
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        name: user
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: user
+    name: user
+    version: v0.1.0
+  name: user
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: user
+    name: user
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: user-db
+    name: user-db
+    version: v0.1.0
+  name: user-db
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-db
+      name: user-db
+      version: v0.1.0
+  template:
+    metadata:
+      labels:
+        app: user-db
+        name: user-db
+        version: v0.1.0
+    spec:
+      containers:
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/user-db:0.3.0
+        name: user-db
+        ports:
+        - containerPort: 27017
+          name: mongo
+        securityContext:
+          capabilities:
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user-db
+    name: user-db
+    version: v0.1.0
+  name: user-db
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: user-db
+    name: user-db
+    version: v0.1.0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-amqp-py
+    name: mizutest-amqp-py
+    version: v0.1.0
+  name: mizutest-amqp-py
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-amqp-py
+  template:
+    metadata:
+      labels:
+        app: mizutest-amqp-py
+        name: mizutest-amqp-py
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-amqp-py:latest
+        imagePullPolicy: Always
+        name: mizutest-amqp-py
+        ports:
+        - containerPort: 5672
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-amqp-py
+    name: mizutest-amqp-py
+    version: v0.1.0
+  name: mizutest-amqp-py
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+  selector:
+    name: mizutest-amqp-py
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: zookeeper
+  name: zookeeper
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+      - env:
+        - name: ZOO_MY_ID
+          value: '1'
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/library/zookeeper:3.4.13
+        imagePullPolicy: IfNotPresent
+        name: zookeeper
+        ports:
+        - containerPort: 2181
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: zookeeper-service
+  name: zookeeper-service
+  namespace: sock-shop
+spec:
+  ports:
+  - name: zookeeper-port
+    port: 2181
+    targetPort: 2181
+  selector:
+    app: zookeeper
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  namespace: sock-shop
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  serviceName: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - env:
+        - name: KAFKA_ADVERTISED_PORT
+          value: '9092'
+        - name: BROKER_ID_COMMAND
+          value: hostname | cut -d'-' -f2
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper-service:2181
+        - name: KAFKA_LISTENERS
+          value: PLAINTEXT://:9092
+        - name: KAFKA_JMX_OPTS
+          value: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false
+            -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false
+            -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.rmi.port=9999
+            -Djava.rmi.server.hostname=127.0.0.1
+        - name: JMX_PORT
+          value: '9999'
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/wurstmeister/kafka:2.11-2.0.0
+        imagePullPolicy: IfNotPresent
+        name: kafka
+        ports:
+        - containerPort: 9092
+          name: plaintext
+        - containerPort: 9999
+          name: jmx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kafka
+  name: kafka
+  namespace: sock-shop
+spec:
+  clusterIP: None
+  ports:
+  - name: plaintext
+    port: 9092
+  - name: jmx
+    port: 9999
+  selector:
+    app: kafka
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-kafka-py
+    name: mizutest-kafka-py
+    version: v0.1.0
+  name: mizutest-kafka-py
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-kafka-py
+  template:
+    metadata:
+      labels:
+        app: mizutest-kafka-py
+        name: mizutest-kafka-py
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-kafka-py:latest
+        imagePullPolicy: Always
+        name: mizutest-kafka-py
+        ports:
+        - containerPort: 9092
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-kafka-py
+    name: mizutest-kafka-py
+    version: v0.1.0
+  name: mizutest-kafka-py
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 9092
+    targetPort: 9092
+  selector:
+    name: mizutest-kafka-py
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-kafka-go
+    name: mizutest-kafka-go
+    version: v0.1.0
+  name: mizutest-kafka-go
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-kafka-go
+  template:
+    metadata:
+      labels:
+        app: mizutest-kafka-go
+        name: mizutest-kafka-go
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-kafka-go:latest
+        imagePullPolicy: Always
+        name: mizutest-kafka-go
+        ports:
+        - containerPort: 9092
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-kafka-go
+    name: mizutest-kafka-go
+    version: v0.1.0
+  name: mizutest-kafka-go
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 9092
+    targetPort: 9092
+  selector:
+    name: mizutest-kafka-go
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-redis-go
+    name: mizutest-redis-go
+    version: v0.1.0
+  name: mizutest-redis-go
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-redis-go
+  template:
+    metadata:
+      labels:
+        app: mizutest-redis-go
+        name: mizutest-redis-go
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-redis-go:latest
+        imagePullPolicy: Always
+        name: mizutest-redis-go
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-redis-go
+    name: mizutest-redis-go
+    version: v0.1.0
+  name: mizutest-redis-go
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    name: mizutest-redis-go
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-grpc-py-server
+    name: mizutest-grpc-py-server
+    version: v0.1.0
+  name: mizutest-grpc-py-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-grpc-py-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-grpc-py-server
+        name: mizutest-grpc-py-server
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-grpc-py-server:latest
+        imagePullPolicy: Always
+        name: mizutest-grpc-py-server
+        ports:
+        - containerPort: 50051
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-grpc-py-server
+    name: mizutest-grpc-py-server
+    version: v0.1.0
+  name: mizutest-grpc-py-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 50051
+    targetPort: 50051
+  selector:
+    name: mizutest-grpc-py-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-grpc-py-client
+    name: mizutest-grpc-py-client
+    version: v0.1.0
+  name: mizutest-grpc-py-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-grpc-py-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-grpc-py-client
+        name: mizutest-grpc-py-client
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-grpc-py-client:latest
+        imagePullPolicy: Always
+        name: mizutest-grpc-py-client
+        ports:
+        - containerPort: 50051
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-grpc-py-client
+    name: mizutest-grpc-py-client
+    version: v0.1.0
+  name: mizutest-grpc-py-client
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 50051
+    targetPort: 50051
+  selector:
+    name: mizutest-grpc-py-client
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loadtest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: load-test
+    name: load-test
+    version: v0.1.0
+  name: load-test
+  namespace: loadtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: load-test
+  template:
+    metadata:
+      labels:
+        app: load-test
+        name: load-test
+        version: v0.1.0
+    spec:
+      containers:
+      - args:
+        - -c
+        - while true; do locust --host http://front-end.sock-shop.svc.cluster.local
+          -f /config/locustfile.py --clients 1 --hatch-rate 1 --num-request 10 --no-web;
+          done
+        command:
+        - /bin/sh
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/weaveworksdemos/load-test:0.1.1
+        name: load-test
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-outbound-tls-openssl
+    name: mizutest-outbound-tls-openssl
+    version: v0.1.0
+  name: mizutest-outbound-tls-openssl
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-outbound-tls-openssl
+  template:
+    metadata:
+      labels:
+        app: mizutest-outbound-tls-openssl
+        name: mizutest-outbound-tls-openssl
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - python3
+        - example.py
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-outbound-tls-openssl:latest
+        imagePullPolicy: Always
+        name: mizutest-outbound-tls-openssl
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-outbound-tls-openssl
+    name: mizutest-outbound-tls-openssl
+    version: v0.1.0
+  name: mizutest-outbound-tls-openssl
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    name: mizutest-outbound-tls-openssl
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-graphql-server
+    name: mizutest-graphql-server
+    version: v0.1.0
+  name: mizutest-graphql-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-graphql-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-graphql-server
+        name: mizutest-graphql-server
+        version: v0.1.0
+    spec:
+      containers:
+      - image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/swapi-graphql:latest
+        imagePullPolicy: Always
+        name: mizutest-graphql-server
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-graphql-server
+    name: mizutest-graphql-server
+    version: v0.1.0
+  name: mizutest-graphql-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    name: mizutest-graphql-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-graphql-client
+    name: mizutest-graphql-client
+    version: v0.1.0
+  name: mizutest-graphql-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-graphql-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-graphql-client
+        name: mizutest-graphql-client
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh > /dev/null 2>&1
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-graphql-client:latest
+        imagePullPolicy: Always
+        name: mizutest-graphql-client
+        ports:
+        - containerPort: 50051
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-graphql-client
+    name: mizutest-graphql-client
+    version: v0.1.0
+  name: mizutest-graphql-client
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 50051
+    targetPort: 50051
+  selector:
+    name: mizutest-graphql-client
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-outbound-tls-golang
+    name: mizutest-outbound-tls-golang
+    version: v0.1.0
+  name: mizutest-outbound-tls-golang
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-outbound-tls-golang
+  template:
+    metadata:
+      labels:
+        app: mizutest-outbound-tls-golang
+        name: mizutest-outbound-tls-golang
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - ./main
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-outbound-tls-golang:latest
+        imagePullPolicy: Always
+        name: mizutest-outbound-tls-golang
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-outbound-tls-golang
+    name: mizutest-outbound-tls-golang
+    version: v0.1.0
+  name: mizutest-outbound-tls-golang
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    name: mizutest-outbound-tls-golang
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-websocket-client
+    name: mizutest-websocket-client
+    version: v0.1.0
+  name: mizutest-websocket-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-websocket-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-websocket-client
+        name: mizutest-websocket-client
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh true # > /dev/null 2>&1
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-websocket-client:latest
+        imagePullPolicy: Always
+        name: mizutest-websocket-client
+        ports:
+        - containerPort: 5672
+        resources:
+          limits:
+            cpu: 50m
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-websocket-client
+    name: mizutest-websocket-client
+    version: v0.1.0
+  name: mizutest-websocket-client
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+  selector:
+    name: mizutest-websocket-client
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-sctp-server
+    name: mizutest-sctp-server
+    version: v0.1.0
+  name: mizutest-sctp-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-sctp-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-sctp-server
+        name: mizutest-sctp-server
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-sctp-server:latest
+        imagePullPolicy: Always
+        name: mizutest-sctp-server
+        ports:
+        - containerPort: 50051
+          hostPort: 50051
+          protocol: SCTP
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-sctp-server
+    name: mizutest-sctp-server
+    version: v0.1.0
+  name: mizutest-sctp-server
+  namespace: sock-shop
+spec:
+  clusterIP: None
+  ports:
+  - port: 50051
+    protocol: SCTP
+    targetPort: 50051
+  selector:
+    name: mizutest-sctp-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-sctp-client
+    name: mizutest-sctp-client
+    version: v0.1.0
+  name: mizutest-sctp-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-sctp-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-sctp-client
+        name: mizutest-sctp-client
+        version: v0.1.0
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - ./run.sh
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: PYTHONIOENCODING
+          value: UTF-8
+        image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/mertyildiran/mizutest-sctp-client:latest
+        imagePullPolicy: Always
+        name: mizutest-sctp-client
+        ports:
+        - containerPort: 50051
+        resources:
+          limits:
+            cpu: 75m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - all
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-sctp-client
+    name: mizutest-sctp-client
+    version: v0.1.0
+  name: mizutest-sctp-client
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 50051
+    targetPort: 50051
+  selector:
+    name: mizutest-sctp-client
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mizutest-sctp-server
+  namespace: sock-shop
+spec:
+  egress:
+  - {}
+  ingress:
+  - ports:
+    - port: 50051
+      protocol: SCTP
+  podSelector:
+    matchLabels:
+      name: mizutest-sctp-server
+  policyTypes:
+  - Ingress
+  - Egress
+---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-ldap-server
+  namespace: sock-shop
+  labels:
+    app: mizutest-ldap-server
+    protocol: v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mizutest-ldap-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-ldap-server
+        protocol: v3
+    spec:
+      containers:
+        - name: mizutest-ldap-server
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/osixia/openldap:1.5.0
+          ports:
+            - containerPort: 389
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-ldap-server
+  namespace: sock-shop
+  labels:
+    app: mizutest-ldap-server
+    protocol: v3
+spec:
+  ports:
+    - port: 389
+      targetPort: 389
+  selector:
+    app: mizutest-ldap-server
+    protocol: v3
+  type: ClusterIP
+---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mizutest-ldap-client
+  namespace: sock-shop
+  labels:
+    app: mizutest-ldap-client
+    protocol: v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mizutest-ldap-client
+      protocol: v3
+  template:
+    metadata:
+      labels:
+        app: mizutest-ldap-client
+        protocol: v3
+    spec:
+      containers:
+        - name: mizutest-ldap-client
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-ldap-go:latest
+          imagePullPolicy: Always
+          args:
+          - -password
+          - admin
+          - -username
+          - "cn=admin,dc=example,dc=org"
+          - -baseDN
+          - "dc=example,dc=org"
+          - -server
+          - mizutest-ldap-server
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mizutest-ldap-client
+  namespace: sock-shop
+  labels:
+    app: mizutest-ldap-client
+    protocol: v3
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: mizutest-ldap-client
+    protocol: v3
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-radius-server
+    name: mizutest-radius-server
+    version: v0.1.0
+  name: mizutest-radius-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-radius-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-radius-server
+        name: mizutest-radius-server
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-radius-server
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-radius-server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 1812
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-radius-server
+    name: mizutest-radius-server
+    version: v0.1.0
+  name: mizutest-radius-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 1812
+    protocol: UDP
+    targetPort: 1812
+  selector:
+    name: mizutest-radius-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-radius-client
+    name: mizutest-radius-client
+    version: v0.1.0
+  name: mizutest-radius-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-radius-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-radius-client
+        name: mizutest-radius-client
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-radius-client
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-radius-client:latest
+          imagePullPolicy: Always
+          args:
+          - -server
+          - mizutest-radius-server
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-diameter-tcp-server
+    name: mizutest-diameter-tcp-server
+    version: v0.1.0
+  name: mizutest-diameter-tcp-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-diameter-tcp-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-diameter-tcp-server
+        name: mizutest-diameter-tcp-server
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-diameter-tcp-server
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-diameter-server:latest
+          imagePullPolicy: Always
+          args:
+          - -network_type
+          - tcp
+          ports:
+          - containerPort: 3868
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-diameter-tcp-server
+    name: mizutest-diameter-tcp-server
+    version: v0.1.0
+  name: mizutest-diameter-tcp-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 3868
+    protocol: TCP
+    targetPort: 3868
+  selector:
+    name: mizutest-diameter-tcp-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-diameter-tcp-client
+    name: mizutest-diameter-tcp-client
+    version: v0.1.0
+  name: mizutest-diameter-tcp-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-diameter-tcp-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-diameter-tcp-client
+        name: mizutest-diameter-tcp-client
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-diameter-tcp-client
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-diameter-client:latest
+          imagePullPolicy: Always
+          args:
+          - -addr
+          - "mizutest-diameter-tcp-server:3868"
+          - -network_type
+          - tcp
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-diameter-sctp-server
+    name: mizutest-diameter-sctp-server
+    version: v0.1.0
+  name: mizutest-diameter-sctp-server
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-diameter-sctp-server
+  template:
+    metadata:
+      labels:
+        app: mizutest-diameter-sctp-server
+        name: mizutest-diameter-sctp-server
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-diameter-sctp-server
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-diameter-server:latest
+          imagePullPolicy: Always
+          args:
+          - -network_type
+          - sctp
+          ports:
+          - containerPort: 3868
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mizutest-diameter-sctp-server
+    name: mizutest-diameter-sctp-server
+    version: v0.1.0
+  name: mizutest-diameter-sctp-server
+  namespace: sock-shop
+spec:
+  ports:
+  - port: 3868
+    protocol: SCTP
+    targetPort: 3868
+  selector:
+    name: mizutest-diameter-sctp-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mizutest-diameter-sctp-client
+    name: mizutest-diameter-sctp-client
+    version: v0.1.0
+  name: mizutest-diameter-sctp-client
+  namespace: sock-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mizutest-diameter-sctp-client
+  template:
+    metadata:
+      labels:
+        app: mizutest-diameter-sctp-client
+        name: mizutest-diameter-sctp-client
+        version: v0.1.0
+    spec:
+      containers:
+        - name: mizutest-diameter-sctp-client
+          image: 851725373216.dkr.ecr.us-east-1.amazonaws.com/kubeshark/mizutest-diameter-client:latest
+          imagePullPolicy: Always
+          args:
+          - -addr
+          - "mizutest-diameter-sctp-server:3868"
+          - -network_type
+          - sctp
+          resources:
+            limits:
+              cpu: 75m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mizutest-diameter-sctp-server
+  namespace: sock-shop
+spec:
+  egress:
+  - {}
+  ingress:
+  - ports:
+    - port: 3868
+      protocol: SCTP
+  podSelector:
+    matchLabels:
+      name: mizutest-diameter-sctp-server
+  policyTypes:
+  - Ingress
+  - Egress

@@ -4,13 +4,15 @@ See the [documentation](https://microservices-demo.github.io/deployment/kubernet
 
 ## Kubernetes manifests
 
-There are 2 sets of manifests for deploying Sock Shop on Kubernetes: one in the [manifests directory](manifests/), and complete-demo.yaml. The complete-demo.yaml is a single file manifest
-made by concatenating all the manifests from the manifests directory, so please regenerate it when changing files in the manifests directory.
+There are 3 sets of manifests for deploying Sock Shop on Kubernetes: one in the [manifests directory](manifests/), complete-demo.yaml and comlete-demo-aws.yaml. The complete-demo.yaml is a single file manifest
+made by concatenating all the manifests from the manifests directory, so please regenerate it when changing files in the manifests directory. The complete-demo-aws.yaml is the same contatenated manifests file, but with AWS Container Registry for image names.
 
-Install from the single file manifest complete-demo.yaml:
+Install from the single file manifest complete-demo.yaml/complete-demo-aws.yaml:
 
 ```sh
 kubectl apply -f deploy/kubernetes/complete-demo.yaml
+# or for AWS
+kubectl apply -f deploy/kubernetes/complete-demo-aws.yaml
 # or directly from github
 kubectl apply -f https://raw.githubusercontent.com/kubeshark/sock-shop-demo/master/deploy/kubernetes/complete-demo.yaml
 ```
@@ -20,6 +22,8 @@ Regenerate the complete-demo.yaml:
 ```sh
 cd deploy/kubernetes
 make gen-complete-demo
+# or for AWS
+make gen-complete-demo-aws
 ```
 
 Alternatively, install from [manifests directory](manifests/):
