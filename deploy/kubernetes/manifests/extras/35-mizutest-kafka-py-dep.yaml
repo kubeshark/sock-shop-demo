@@ -24,7 +24,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-kafka-py:latest
+        image: kubehq/mizutest-kafka-py:latest
         imagePullPolicy: Always
         name: mizutest-kafka-py
         ports:

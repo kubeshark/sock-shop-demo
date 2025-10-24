@@ -20,7 +20,7 @@ spec:
         version: v0.1.0
     spec:
       containers:
-      - image: mertyildiran/swapi-graphql:latest
+      - image: kubehq/swapi-graphql:latest
         imagePullPolicy: Always
         name: mizutest-graphql-server
         ports:

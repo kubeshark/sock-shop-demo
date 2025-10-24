@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build . -t mertyildiran/mizutest-grpc-py-client:latest && docker push mertyildiran/mizutest-grpc-py-client:latest
+docker build . -t kubehq/mizutest-grpc-py-client:latest && docker push kubehq/mizutest-grpc-py-client:latest

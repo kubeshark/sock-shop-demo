@@ -24,7 +24,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-kafka-go:latest
+        image: kubehq/mizutest-kafka-go:latest
         imagePullPolicy: Always
         name: mizutest-kafka-go
         ports:

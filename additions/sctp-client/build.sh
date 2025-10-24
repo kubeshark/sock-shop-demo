@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build . -t mertyildiran/mizutest-sctp-client:latest && docker push mertyildiran/mizutest-sctp-client:latest
+docker build . -t kubehq/mizutest-sctp-client:latest && docker push kubehq/mizutest-sctp-client:latest

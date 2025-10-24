@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build . -t mertyildiran/mizutest-redis-go:latest && docker push mertyildiran/mizutest-redis-go:latest
+docker build . -t kubehq/mizutest-redis-go:latest && docker push kubehq/mizutest-redis-go:latest
