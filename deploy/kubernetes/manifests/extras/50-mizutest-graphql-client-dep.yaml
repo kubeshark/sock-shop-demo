@@ -24,7 +24,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-graphql-client:latest
+        image: kubehq/mizutest-graphql-client:latest
         imagePullPolicy: Always
         name: mizutest-graphql-client
         ports:

@@ -1057,7 +1057,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-amqp-py:latest
+        image: kubehq/mizutest-amqp-py:latest
         imagePullPolicy: Always
         name: mizutest-amqp-py
         ports:
@@ -1228,7 +1228,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-kafka-py:latest
+        image: kubehq/mizutest-kafka-py:latest
         imagePullPolicy: Always
         name: mizutest-kafka-py
         ports:
@@ -1296,7 +1296,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-kafka-go:latest
+        image: kubehq/mizutest-kafka-go:latest
         imagePullPolicy: Always
         name: mizutest-kafka-go
         ports:
@@ -1355,7 +1355,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-redis-go:latest
+        image: kubehq/mizutest-redis-go:latest
         imagePullPolicy: Always
         name: mizutest-redis-go
         ports:
@@ -1419,7 +1419,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-grpc-py-server:latest
+        image: kubehq/mizutest-grpc-py-server:latest
         imagePullPolicy: Always
         name: mizutest-grpc-py-server
         ports:
@@ -1492,7 +1492,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-grpc-py-client:latest
+        image: kubehq/mizutest-grpc-py-client:latest
         imagePullPolicy: Always
         name: mizutest-grpc-py-client
         ports:
@@ -1603,7 +1603,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-outbound-tls-openssl:latest
+        image: kubehq/mizutest-outbound-tls-openssl:latest
         imagePullPolicy: Always
         name: mizutest-outbound-tls-openssl
         ports:
@@ -1658,7 +1658,7 @@ spec:
         version: v0.1.0
     spec:
       containers:
-      - image: mertyildiran/swapi-graphql:latest
+      - image: kubehq/swapi-graphql:latest
         imagePullPolicy: Always
         name: mizutest-graphql-server
         ports:
@@ -1717,7 +1717,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-graphql-client:latest
+        image: kubehq/mizutest-graphql-client:latest
         imagePullPolicy: Always
         name: mizutest-graphql-client
         ports:
@@ -1919,7 +1919,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-sctp-server:latest
+        image: kubehq/mizutest-sctp-server:latest
         imagePullPolicy: Always
         name: mizutest-sctp-server
         ports:
@@ -1996,7 +1996,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-sctp-client:latest
+        image: kubehq/mizutest-sctp-client:latest
         imagePullPolicy: Always
         name: mizutest-sctp-client
         ports:

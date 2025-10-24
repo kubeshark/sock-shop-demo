@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build . -t mertyildiran/mizutest-kafka-go:latest && docker push mertyildiran/mizutest-kafka-go:latest
+docker build . -t kubehq/mizutest-kafka-go:latest && docker push kubehq/mizutest-kafka-go:latest

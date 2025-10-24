@@ -28,7 +28,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-outbound-tls-openssl:latest
+        image: kubehq/mizutest-outbound-tls-openssl:latest
         imagePullPolicy: Always
         name: mizutest-outbound-tls-openssl
         ports:

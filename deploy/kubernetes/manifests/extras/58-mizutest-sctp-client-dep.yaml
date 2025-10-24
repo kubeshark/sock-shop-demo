@@ -29,7 +29,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-sctp-client:latest
+        image: kubehq/mizutest-sctp-client:latest
         imagePullPolicy: Always
         name: mizutest-sctp-client
         ports:

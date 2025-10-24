@@ -24,7 +24,7 @@ spec:
         - sh
         - -c
         - ./run.sh > /dev/null 2>&1
-        image: mertyildiran/mizutest-redis-go:latest
+        image: kubehq/mizutest-redis-go:latest
         imagePullPolicy: Always
         name: mizutest-redis-go
         ports:

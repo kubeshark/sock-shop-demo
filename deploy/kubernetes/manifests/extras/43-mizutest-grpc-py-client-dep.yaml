@@ -29,7 +29,7 @@ spec:
           value: '1'
         - name: PYTHONIOENCODING
           value: UTF-8
-        image: mertyildiran/mizutest-grpc-py-client:latest
+        image: kubehq/mizutest-grpc-py-client:latest
         imagePullPolicy: Always
         name: mizutest-grpc-py-client
         ports:
