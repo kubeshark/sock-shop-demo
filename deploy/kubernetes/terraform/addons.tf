@@ -83,7 +83,7 @@ module "admin_team" {
 
 resource "helm_release" "kubeshark" {
   name = "kubeshark"
-  repository = "https://helm.kubeshark.co"
+  repository = "https://helm.kubehq.com"
   chart = "kubeshark"
   values = [templatefile("${path.module}/values/kubeshark.yaml", {
     certificate_arn = data.aws_acm_certificate.kubeshark_crt.arn
