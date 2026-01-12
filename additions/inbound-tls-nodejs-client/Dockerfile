@@ -1,0 +1,6 @@
+ARG NODEVERSION=16
+FROM node:${NODEVERSION}
+
+WORKDIR /app
+
+COPY main.js .
